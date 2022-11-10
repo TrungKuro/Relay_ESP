@@ -1,0 +1,60 @@
+===================================================================================================
+
+# About ESP
+
+	ESP8266 Arduino Core
+	-> https://arduino-esp8266.readthedocs.io/en/latest/reference.html
+
+	Giới thiệu về ESP32 - Bắt đầu
+	-> https://www.youtube.com/watch?v=xPlN_Tk3VLQ&t=1s&ab_channel=DroneBotWorkshop
+
+	Using ESP-WROOM-02 Wifi Module As Arduino MCU
+	-> https://www.deviceplus.com/arduino/using-esp-wroom-02-wifi-module-as-arduino-mcu/
+
+===================================================================================================
+
+# Mode AP
+
+	ESP8266 NodeMCU Access Point (AP) for Web Server
+	-> https://randomnerdtutorials.com/esp8266-nodemcu-access-point-ap-web-server/
+	|
+	ESP8266 DHT11/DHT22 Temperature and Humidity Web Server with Arduino IDE
+	-> https://randomnerdtutorials.com/esp8266-dht11dht22-temperature-and-humidity-web-server-with-arduino-ide/
+
+	How to Set an ESP32 Access Point (AP) for Web Server
+	-> https://randomnerdtutorials.com/esp32-access-point-ap-web-server/
+
+	ESP8266 NodeMCU Async Web Server – Control Outputs with Arduino IDE (ESPAsyncWebServer library)
+	-> https://randomnerdtutorials.com/esp8266-nodemcu-async-web-server-espasyncwebserver-library/
+
+===================================================================================================
+
+# RTC
+
+	Đồng hồ thời gian thực cho ESP8266
+	-> https://hocarm.org/dong-ho-thoi-gian-thuc-cho-esp8266/
+
+===================================================================================================
+
+# Read Analog
+
+	ESP8266 ADC – Read Analog Values with Arduino IDE, MicroPython and Lua
+	-> https://randomnerdtutorials.com/esp8266-adc-reading-analog-values-with-nodemcu/
+
+	analogRead()
+	-> https://www.arduino.cc/reference/en/language/functions/analog-io/analogread/
+
+	WHAT IS SAMPLE RATE OF ANALOGREAD()?
+	-> https://www.esp8266.com/viewtopic.php?t=2915
+
+	ESP32 ADC – Read Analog Values with Arduino IDE
+	-> https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
+
+===================================================================================================
+
+# Function in Javascript
+
+	Window setInterval()
+	-> https://www.w3schools.com/jsref/met_win_setinterval.asp
+
+===================================================================================================
