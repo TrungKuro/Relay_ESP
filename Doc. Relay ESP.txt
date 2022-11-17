@@ -29,6 +29,13 @@
 
 ===================================================================================================
 
+# Server-Sent Events (SSE)
+
+	ESP8266 NodeMCU Web Server using Server-Sent Events (Update Sensor Readings Automatically)
+	-> https://randomnerdtutorials.com/esp8266-nodemcu-web-server-sent-events-sse/
+
+===================================================================================================
+
 # RTC
 
 	Đồng hồ thời gian thực cho ESP8266

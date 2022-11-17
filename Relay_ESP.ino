@@ -28,7 +28,7 @@
 /* --------------------------------- Button -------------------------------- */
 
 /* Read ADC from pin "TOUT" (A0)
-** When no 'click' the button, the value voltage is 0V ~ 3 ADC
+** When no 'click' the button, the value voltage is 0V ~ 3ADC
 **
 **          | VDC | ADC | Real value | Range ± 0.05 VDC
 ** Button 1 = 0.2 : 062 ~ 057 -5    -> [0.15 - 0.25] = [046 - 078]
@@ -64,6 +64,9 @@ bool statusBtn = false;
 
 #define LED 16
 
+#define LED_ON digitalWrite(LED, HIGH)
+#define LED_OFF digitalWrite(LED, LOW)
+
 /* --------------------------------- Relay --------------------------------- */
 
 /* Trigger LOW to turn-on Relay
@@ -84,12 +87,22 @@ bool statusBtn = false;
 #define PARAM_INPUT_1 "output" // What pin output of Relay?
 #define PARAM_INPUT_2 "state"  // State output of pin, with 1 is HIGH, 0 is LOW
 
-String statusRelay1;
-String statusRelay2;
-String statusRelay3;
-String statusRelay4;
+bool statusRelay[4] = {
+    true, // Relay 1
+    true, // Relay 2
+    true, // Relay 3
+    true  // Relay 4
+};        // Turn-off all Relays
 
-bool statusRelay[4] = {true, true, true, true};
+#define TRIGGER_RELAY_1 digitalWrite(RELAY_1, statusRelay[0])
+#define TRIGGER_RELAY_2 digitalWrite(RELAY_2, statusRelay[1])
+#define TRIGGER_RELAY_3 digitalWrite(RELAY_3, statusRelay[2])
+#define TRIGGER_RELAY_4 digitalWrite(RELAY_4, statusRelay[3])
+
+String statusRelay1 = "";
+String statusRelay2 = "";
+String statusRelay3 = "";
+String statusRelay4 = "";
 
 /* ---------------------------------- RTC ---------------------------------- */
 
@@ -102,8 +115,8 @@ bool statusRelay[4] = {true, true, true, true};
 
 RTC_DS1307 rtc;
 
-String timeRTC;
-String dateRTC;
+String timeRTC = "";
+String dateRTC = "";
 
 /* --------------------- Equipment inspection frequency -------------------- */
 
@@ -122,6 +135,9 @@ unsigned long checkRTC;
 
 /* Create AsyncWebServer object on port 80 */
 AsyncWebServer server(80);
+
+/* Create an Event Source on "/events" */
+AsyncEventSource events("/events");
 
 /* When the slider is red, it means the output is on (its state is HIGH)
 ** When the slider is gray, it means the output is off (its state is LOW)
@@ -196,130 +212,76 @@ const char index_html[] PROGMEM = R"rawliteral(
   <h1>ESP8266 Relay (RTC) Server</h1>
   <h2>TIME - <span id="time">%TIME%</span></h2>
   <h2>DATE - <span id="date">%DATE%</span></h2>
-  <p>
-  <h3>RELAY 1 - <span id="relay1">%RELAY1%</span></h3>
-  <label class="switch">
-    <input type="checkbox" onchange="toggleCheckbox(this)" id="4">
-    <span class="slider"></span>
-  </label>
-  </p>
-  <p>
-  <h3>RELAY 2 - <span id="relay2">%RELAY2%</span></h3>
-  <label class="switch">
-    <input type="checkbox" onchange="toggleCheckbox(this)" id="5">
-    <span class="slider"></span>
-  </label>
-  </p>
-  <p>
-  <h3>RELAY 3 - <span id="relay3">%RELAY3%</span></h3>
-  <label class="switch">
-    <input type="checkbox" onchange="toggleCheckbox(this)" id="12">
-    <span class="slider"></span>
-  </label>
-  </p>
-  <p>
-  <h3>RELAY 4 - <span id="relay4">%RELAY4%</span></h3>
-  <label class="switch">
-    <input type="checkbox" onchange="toggleCheckbox(this)" id="13">
-    <span class="slider"></span>
-  </label>
-  </p>
+  %RELAY%
 </body>
 <script>
-  function toggleCheckbox(element) {
+  function toggleCheckbox(element, relay) {
+    var stateRelay = document.getElementById(relay);
     var xhr = new XMLHttpRequest();
     if (element.checked) {
+      stateRelay.innerHTML = "ON";
       xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
     }
     else {
+      stateRelay.innerHTML = "OFF";
       xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
     }
     xhr.send();
   };
-  setInterval(function () {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("relay1").innerHTML = this.responseText;
-        if (document.getElementById("relay1").textContent == "ON") {
-          document.getElementById("4").checked = true;
-        }
-        else {
-          document.getElementById("4").checked = false;
-        }
+  if (!!window.EventSource) {
+    var source = new EventSource('/events');
+    source.addEventListener('open', function (e) {
+      console.log("Events Connected");
+    }, false);
+    source.addEventListener('error', function (e) {
+      if (e.target.readyState != EventSource.OPEN) {
+        console.log("Events Disconnected");
       }
-    };
-    xhttp.open("GET", "/relay1", true);
-    xhttp.send();
-  }, 50);
-  setInterval(function () {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("relay2").innerHTML = this.responseText;
-        if (document.getElementById("relay2").textContent == "ON") {
-          document.getElementById("5").checked = true;
-        }
-        else {
-          document.getElementById("5").checked = false;
-        }
+    }, false);
+    source.addEventListener('message', function (e) {
+      console.log("message", e.data);
+    }, false);
+    source.addEventListener('relay1', function (e) {
+      console.log("relay1", e.data);
+      document.getElementById("relay1").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("4").checked = true;
       }
-    };
-    xhttp.open("GET", "/relay2", true);
-    xhttp.send();
-  }, 50);
-  setInterval(function () {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("relay3").innerHTML = this.responseText;
-        if (document.getElementById("relay3").textContent == "ON") {
-          document.getElementById("12").checked = true;
-        }
-        else {
-          document.getElementById("12").checked = false;
-        }
+      else if (e.data == "OFF") {
+        document.getElementById("4").checked = false;
       }
-    };
-    xhttp.open("GET", "/relay3", true);
-    xhttp.send();
-  }, 50);
-  setInterval(function () {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("relay4").innerHTML = this.responseText;
-        if (document.getElementById("relay4").textContent == "ON") {
-          document.getElementById("13").checked = true;
-        }
-        else {
-          document.getElementById("13").checked = false;
-        }
+    }, false);
+    source.addEventListener('relay2', function (e) {
+      console.log("relay2", e.data);
+      document.getElementById("relay2").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("5").checked = true;
       }
-    };
-    xhttp.open("GET", "/relay4", true);
-    xhttp.send();
-  }, 50);
-  setInterval(function () {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("time").innerHTML = this.responseText;
+      else if (e.data == "OFF") {
+        document.getElementById("5").checked = false;
       }
-    };
-    xhttp.open("GET", "/time", true);
-    xhttp.send();
-  }, 1000);
-  setInterval(function () {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("date").innerHTML = this.responseText;
+    }, false);
+    source.addEventListener('relay3', function (e) {
+      console.log("relay3", e.data);
+      document.getElementById("relay3").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("12").checked = true;
       }
-    };
-    xhttp.open("GET", "/date", true);
-    xhttp.send();
-  }, 1000);
+      else if (e.data == "OFF") {
+        document.getElementById("12").checked = false;
+      }
+    }, false);
+    source.addEventListener('relay4', function (e) {
+      console.log("relay4", e.data);
+      document.getElementById("relay4").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("13").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("13").checked = false;
+      }
+    }, false);
+  }
 </script>
 </html>
 )rawliteral";
@@ -329,7 +291,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 /* ------------------------------------------------------------------------- */
 
 /* Handling the state of Relay */
-String outputState(byte output)
+String stateRelay(byte output)
 {
   if (digitalRead(output))
   {
@@ -341,35 +303,48 @@ String outputState(byte output)
   }
 }
 
+/* Handling the state of Slider Checkbox */
+String stateCheckbox(byte output)
+{
+  if (digitalRead(output))
+  {
+    return ""; // Output now HIGH, mean turn-off Relay
+  }
+  else
+  {
+    return "checked"; // Output now LOW, mean turn-on Relay
+  }
+}
+
 /* Replace placeholder with RTC values and state Relay */
 String processor(const String &var)
 {
+  getRTCReadings(); // Update data from RTC
+
   DEBUG_PRINT("Var: ");
   DEBUG_PRINTLN(var);
 
-  if (var == "RELAY1")
-  {
-    return statusRelay1;
-  }
-  else if (var == "RELAY2")
-  {
-    return statusRelay2;
-  }
-  else if (var == "RELAY3")
-  {
-    return statusRelay3;
-  }
-  else if (var == "RELAY4")
-  {
-    return statusRelay4;
-  }
-  else if (var == "TIME")
+  if (var == "TIME")
   {
     return timeRTC;
   }
   else if (var == "DATE")
   {
     return dateRTC;
+  }
+  else if (var == "RELAY")
+  {
+    statusRelay1 = stateRelay(RELAY_1);
+    statusRelay2 = stateRelay(RELAY_2);
+    statusRelay3 = stateRelay(RELAY_3);
+    statusRelay4 = stateRelay(RELAY_4);
+
+    String relays = "";
+    relays += "<h3>RELAY 1 - <span id=\"relay1\">" + statusRelay1 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay1')\" id=\"" + String(RELAY_1) + "\" " + stateCheckbox(RELAY_1) + "><span class=\"slider\"></span></label>";
+    relays += "<h3>RELAY 2 - <span id=\"relay2\">" + statusRelay2 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay2')\" id=\"" + String(RELAY_2) + "\" " + stateCheckbox(RELAY_2) + "><span class=\"slider\"></span></label>";
+    relays += "<h3>RELAY 3 - <span id=\"relay3\">" + statusRelay3 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay3')\" id=\"" + String(RELAY_3) + "\" " + stateCheckbox(RELAY_3) + "><span class=\"slider\"></span></label>";
+    relays += "<h3>RELAY 4 - <span id=\"relay4\">" + statusRelay4 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay4')\" id=\"" + String(RELAY_4) + "\" " + stateCheckbox(RELAY_4) + "><span class=\"slider\"></span></label>";
+    return relays;
   }
 
   return String();
@@ -429,6 +404,32 @@ char detectButton()
   }
 }
 
+/* Get data from RTC */
+void getRTCReadings()
+{
+  DateTime now = rtc.now();
+
+  /* Buffer can be defined using following combinations:
+  ** hh - the hour with a leading zero (00 to 23)
+  ** mm - the minute with a leading zero (00 to 59)
+  ** ss - the whole second with a leading zero where applicable (00 to 59)
+  ** YYYY - the year as four digit number
+  ** YY - the year as two digit number (00-99)
+  ** MM - the month as number with a leading zero (01-12)
+  ** MMM - the abbreviated English month name ('Jan' to 'Dec')
+  ** DD - the day as number with a leading zero (01 to 31)
+  ** DDD - the abbreviated English day name ('Mon' to 'Sun')
+  */
+
+  char timeBuf[] = "hh:mm:ss";
+  timeRTC = now.toString(timeBuf);
+  DEBUG_PRINTLN(timeRTC);
+
+  char dateBuf[] = "DD/MM/YYYY";
+  dateRTC = now.toString(dateBuf);
+  DEBUG_PRINTLN(dateRTC);
+}
+
 /* ------------------------------------------------------------------------- */
 /*                                    MAIN                                   */
 /* ------------------------------------------------------------------------- */
@@ -440,21 +441,17 @@ void setup()
 
   /* Initialize LED, and turn off it */
   pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  LED_OFF;
 
-  /* Initialize Relay, and turn off all Relay, then update state of them */
+  /* Initialize Relay with initial default state */
   pinMode(RELAY_1, OUTPUT);
-  digitalWrite(RELAY_1, statusRelay[0]);
-  statusRelay1 = outputState(RELAY_1);
+  TRIGGER_RELAY_1;
   pinMode(RELAY_2, OUTPUT);
-  digitalWrite(RELAY_2, statusRelay[1]);
-  statusRelay2 = outputState(RELAY_2);
+  TRIGGER_RELAY_2;
   pinMode(RELAY_3, OUTPUT);
-  digitalWrite(RELAY_3, statusRelay[2]);
-  statusRelay3 = outputState(RELAY_3);
+  TRIGGER_RELAY_3;
   pinMode(RELAY_4, OUTPUT);
-  digitalWrite(RELAY_4, statusRelay[3]);
-  statusRelay4 = outputState(RELAY_4);
+  TRIGGER_RELAY_4;
 
   /* Initialize RTC */
   Wire.begin(SDA, SCL);
@@ -474,82 +471,108 @@ void setup()
   /* Print ESP8266 Local IP Address */
   DEBUG_PRINTLN(WiFi.localIP());
 
-  /* Route for root / web page
+  /* Route for root / web page (Handle Web Server)
   **
   ** c_str()
   ** -> https://www.arduino.cc/reference/en/language/variables/data-types/string/functions/c_str/
   */
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/html", index_html, processor); });
+            {
+              DEBUG_PRINTLN(F("--- WEB ---"));
+              request->send_P(200, "text/html", index_html, processor); });
+
+  /* Handle Web Server Events */
+  events.onConnect([](AsyncEventSourceClient *client)
+                   {
+                    if (client->lastId())
+                    {
+                      DEBUG_PRINT(F("Client reconnected! Last message ID that it got is: "));
+                      DEBUG_PRINTLN(client->lastId());
+                    }
+                    /* Send event with message "hello!", id current millis
+                    ** And set reconnect delay to 0.1 second
+                    */
+                    client->send("hello!", NULL, millis(), 1000); });
+
+  /* ----------------------------------------------------------------------- */
 
   /* Send a GET request to <ESP_IP>/time=<timeRTC.c_str()> */
   server.on("/time", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", timeRTC.c_str()); });
+            { DEBUG_PRINTLN(F("TIME"));
+              request->send_P(200, "text/plain", timeRTC.c_str()); });
 
   /* Send a GET request to <ESP_IP>/date=<dateRTC.c_str()> */
   server.on("/date", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", dateRTC.c_str()); });
+            { DEBUG_PRINTLN(F("DATE"));
+              request->send_P(200, "text/plain", dateRTC.c_str()); });
 
-  /* Send a GET request to <ESP_IP>/relay1=<statusRelay1.c_str()> */
-  server.on("/relay1", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", statusRelay1.c_str()); });
+  /* ----------------------------------------------------------------------- */
 
-  /* Send a GET request to <ESP_IP>/relay2=<statusRelay2.c_str()> */
-  server.on("/relay2", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", statusRelay2.c_str()); });
+  /* Send a GET request to <ESP_IP>/relay1=<String(statusRelay[0])> */
+  // server.on("/relay1", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[0]).c_str()); });
 
-  /* Send a GET request to <ESP_IP>/relay3=<statusRelay3.c_str()> */
-  server.on("/relay3", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", statusRelay3.c_str()); });
+  /* Send a GET request to <ESP_IP>/relay2=<String(statusRelay[1])> */
+  // server.on("/relay2", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[1]).c_str()); });
 
-  /* Send a GET request to <ESP_IP>/relay4=<statusRelay4.c_str()> */
-  server.on("/relay4", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", statusRelay4.c_str()); });
+  /* Send a GET request to <ESP_IP>/relay3=<String(statusRelay[2])> */
+  // server.on("/relay3", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[2]).c_str()); });
+
+  /* Send a GET request to <ESP_IP>/relay4=<String(statusRelay[3])> */
+  // server.on("/relay4", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[3]).c_str()); });
+
+  /* ----------------------------------------------------------------------- */
 
   /* Send a GET request to <ESP_IP>/update?output=<inputMessage1>&state=<inputMessage2> */
   server.on("/update", HTTP_GET, [](AsyncWebServerRequest *request)
             {
-    String inputMessage1;
-    String inputMessage2;
+              String inputMessage1;
+              String inputMessage2;
 
-    /* GET value of "output" and "state" */
-    if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2)) {
-      inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
-      inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
+              /* GET value of "output" and "state" */
+              if (request->hasParam(PARAM_INPUT_1) && request->hasParam(PARAM_INPUT_2))
+              {
+                inputMessage1 = request->getParam(PARAM_INPUT_1)->value();
+                inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
 
-      switch (inputMessage1.toInt()) // Update for "statusRelay"
-      {
-        case RELAY_1: (inputMessage2.toInt())?(statusRelay[0] = true):(statusRelay[0] = false);
-        digitalWrite(RELAY_1, statusRelay[0]); // Relay 1 control
-        statusRelay1 = outputState(RELAY_1);
-        break;
-        case RELAY_2: (inputMessage2.toInt())?(statusRelay[1] = true):(statusRelay[1] = false);
-        digitalWrite(RELAY_2, statusRelay[1]); // Relay 2 control
-        statusRelay2 = outputState(RELAY_2);
-        break;
-        case RELAY_3: (inputMessage2.toInt())?(statusRelay[2] = true):(statusRelay[2] = false);
-        digitalWrite(RELAY_3, statusRelay[2]); // Relay 3 control
-        statusRelay3 = outputState(RELAY_3);
-        break;
-        case RELAY_4: (inputMessage2.toInt())?(statusRelay[3] = true):(statusRelay[3] = false);
-        digitalWrite(RELAY_4, statusRelay[3]); // Relay 4 control
-        statusRelay4 = outputState(RELAY_4);
-        break;
-      }
-    }
-    else {
-      inputMessage1 = "No message sent";
-      inputMessage2 = "No message sent";
-    }
+                switch (inputMessage1.toInt()) // Update for "statusRelay"
+                {
+                case RELAY_1:
+                  (inputMessage2.toInt()) ? (statusRelay[0] = true) : (statusRelay[0] = false);
+                  TRIGGER_RELAY_1;
+                  break;
+                case RELAY_2:
+                  (inputMessage2.toInt()) ? (statusRelay[1] = true) : (statusRelay[1] = false);
+                  TRIGGER_RELAY_2;
+                  break;
+                case RELAY_3:
+                  (inputMessage2.toInt()) ? (statusRelay[2] = true) : (statusRelay[2] = false);
+                  TRIGGER_RELAY_3;
+                  break;
+                case RELAY_4:
+                  (inputMessage2.toInt()) ? (statusRelay[3] = true) : (statusRelay[3] = false);
+                  TRIGGER_RELAY_4;
+                  break;
+                }
+              }
+              else
+              {
+                inputMessage1 = "No message sent";
+                inputMessage2 = "No message sent";
+              }
 
-    DEBUG_PRINT(F("GPIO: "));
-    DEBUG_PRINT(inputMessage1);
-    DEBUG_PRINT(F(" - Set to: "));
-    DEBUG_PRINTLN(inputMessage2);
+              DEBUG_PRINT(F("GPIO: "));
+              DEBUG_PRINT(inputMessage1);
+              DEBUG_PRINT(F(" - Set to: "));
+              DEBUG_PRINTLN(inputMessage2);
 
-    request->send(200, "text/plain", "OK"); });
+              request->send(200, "text/plain", "OK"); });
 
   /* Start Server */
+  server.addHandler(&events);
   server.begin();
 }
 
@@ -559,48 +582,56 @@ void loop()
 {
   if (millis() - checkBtn >= TIME_CHECK_BTN)
   {
-    checkBtn = millis();
     char relay = detectButton();
-
     switch (relay)
     {
     case '1':
       statusRelay[0] = !statusRelay[0];
-      digitalWrite(RELAY_1, statusRelay[0]);
-      statusRelay1 = outputState(RELAY_1);
+      TRIGGER_RELAY_1;
+      statusRelay1 = stateRelay(RELAY_1);
+
+      /* Send Events to the Web Server */
+      events.send("ping", NULL, millis());
+      events.send(statusRelay1.c_str(), "relay1", millis());
       break;
     case '2':
       statusRelay[1] = !statusRelay[1];
-      digitalWrite(RELAY_2, statusRelay[1]);
-      statusRelay2 = outputState(RELAY_2);
+      TRIGGER_RELAY_2;
+      statusRelay2 = stateRelay(RELAY_2);
+
+      /* Send Events to the Web Server */
+      events.send("ping", NULL, millis());
+      events.send(statusRelay2.c_str(), "relay2", millis());
       break;
     case '3':
       statusRelay[2] = !statusRelay[2];
-      digitalWrite(RELAY_3, statusRelay[2]);
-      statusRelay3 = outputState(RELAY_3);
+      TRIGGER_RELAY_3;
+      statusRelay3 = stateRelay(RELAY_3);
+
+      /* Send Events to the Web Server */
+      events.send("ping", NULL, millis());
+      events.send(statusRelay3.c_str(), "relay3", millis());
       break;
     case '4':
       statusRelay[3] = !statusRelay[3];
-      digitalWrite(RELAY_4, statusRelay[3]);
-      statusRelay4 = outputState(RELAY_4);
+      TRIGGER_RELAY_4;
+      statusRelay4 = stateRelay(RELAY_4);
+
+      /* Send Events to the Web Server */
+      events.send("ping", NULL, millis());
+      events.send(statusRelay4.c_str(), "relay4", millis());
       break;
     }
+
+    checkBtn = millis();
   }
 
   /* ----------------------------------------------------------------------- */
 
   if (millis() - checkRTC >= TIME_CHECK_RTC)
   {
+    getRTCReadings();
+
     checkRTC = millis();
-    DateTime now = rtc.now();
-
-    String hour = (now.hour() < 10) ? ("0" + String(now.hour())) : (String(now.hour()));
-    String minute = (now.minute() < 10) ? ("0" + String(now.minute())) : (String(now.minute()));
-    String second = (now.second() < 10) ? ("0" + String(now.second())) : (String(now.second()));
-    String day = (now.day() < 10) ? ("0" + String(now.day())) : (String(now.day()));
-    String month = (now.month() < 10) ? ("0" + String(now.month())) : (String(now.month()));
-
-    timeRTC = hour + ":" + minute + ":" + second;
-    dateRTC = day + "/" + month + "/" + String(now.year());
   }
 }
