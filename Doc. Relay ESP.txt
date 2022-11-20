@@ -65,3 +65,29 @@
 	-> https://www.w3schools.com/jsref/met_win_setinterval.asp
 
 ===================================================================================================
+
+# Color
+
+	Color Palette: 35 bảng phối màu đẹp gợi ý cho các designer áp dụng vào project thiết kế của mình
+	-> https://rgb.vn/color-palette-35-bang-phoi-mau-dep-goi-y-cho-cac-designer-ap-dung-vao-project-thiet-ke-cua-minh/
+
+===================================================================================================
+
+# Bug %
+
+	R"rawliteral( convert lost %
+	-> https://www.google.com/search?q=R%22rawliteral(+convert+lost+%25&rlz=1C1VDKB_enVN1022VN1022&oq=R%22rawliteral(+convert+lost+%25&aqs=chrome..69i57j33i160l2.10242j0j7&sourceid=chrome&ie=UTF-8
+	|
+	Template confused by data containing percent ('%') #333
+	-> https://github.com/me-no-dev/ESPAsyncWebServer/issues/333
+	|
+	Using template processor corrupts response HTML if it includes % #644
+	-> https://github.com/me-no-dev/ESPAsyncWebServer/issues/644
+
+	HTML Entities
+	-> https://www.w3schools.com/html/html_entities.asp
+
+	HTML Encoding (Character Sets)
+	-> https://www.w3schools.com/html/html_charset.asp
+
+===================================================================================================

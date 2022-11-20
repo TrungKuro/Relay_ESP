@@ -1,0 +1,342 @@
+<!-- CSS Selector Reference -> https://www.w3schools.com/cssreF/css_selectors.php -->
+<!-- CSS ::before Selector -> https://www.w3schools.com/csSref/sel_before.php -->
+<!-- How TO - Display Text when Checkbox is Checked -> https://www.w3schools.com/howto/howto_js_display_checkbox_text.asp -->
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Demo Relay ESP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <style>
+    html {
+      font-family: Arial;
+      display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+    }
+
+    body {
+      max-width: 600px;
+      margin: 0px auto;
+      padding-bottom: 25px;
+    }
+
+    /* RELAY */
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 120px;
+      height: 68px
+    }
+
+    .switch input {
+      display: none
+    }
+
+    .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 6px
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 52px;
+      width: 52px;
+      left: 8px;
+      bottom: 8px;
+      background-color: #fff;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 3px
+    }
+
+    input:checked+.slider {
+      background-color: #b30000
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(52px);
+      -ms-transform: translateX(52px);
+      transform: translateX(52px)
+    }
+  </style>
+</head>
+
+<body>
+  <h1>ESP8266 Relay (RTC) Server</h1>
+
+  <h2>TIME - <span id="time">%TIME%</span></h2>
+  <h2>DATE - <span id="date">%DATE%</span></h2>
+
+  %RELAY%
+  <!-- <h3>RELAY 1 - <span id="relay1">statusRelay1</span></h3>
+  <label class="switch">
+    <input type="checkbox" onchange="toggleCheckbox(this, 'relay1')" id="String(RELAY_1)" stateCheckbox(RELAY_1)>
+    <span class="slider"></span>
+  </label>
+  <h3>RELAY 2 - <span id="relay2">statusRelay2</span></h3>
+  <label class="switch">
+    <input type="checkbox" onchange="toggleCheckbox(this, 'relay2')" id="String(RELAY_2)" stateCheckbox(RELAY_2)>
+    <span class="slider"></span>
+  </label>
+  <h3>RELAY 3 - <span id="relay3">statusRelay3</span></h3>
+  <label class="switch">
+    <input type="checkbox" onchange="toggleCheckbox(this, 'relay3')" id="String(RELAY_3)" stateCheckbox(RELAY_3)>
+    <span class="slider"></span>
+  </label>
+  <h3>RELAY 4 - <span id="relay4">statusRelay4</span></h3>
+  <label class="switch">
+    <input type="checkbox" onchange="toggleCheckbox(this, 'relay4')" id="String(RELAY_4)" stateCheckbox(RELAY_4)>
+    <span class="slider"></span>
+  </label> -->
+</body>
+
+<script>
+  /* Get data TIME from RTC */
+  setInterval(function () {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("time").innerHTML = this.responseText;
+      }
+    };
+    xhttp.open("GET", "/time", true);
+    xhttp.send();
+  }, 1000);
+
+  /* Get data DATE from RTC */
+  setInterval(function () {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("date").innerHTML = this.responseText;
+      }
+    };
+    xhttp.open("GET", "/date", true);
+    xhttp.send();
+  }, 1000);
+
+  /* Send data state of RELAY (HTTP GET) to ESP */
+  function toggleCheckbox(element, relay) {
+    var stateRelay = document.getElementById(relay); // Get ID of that Relay
+    var xhr = new XMLHttpRequest();
+    if (element.checked) {
+      stateRelay.innerHTML = "ON"; // Display state of that Relay
+      xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
+    }
+    else {
+      stateRelay.innerHTML = "OFF"; // Display state of that Relay
+      xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
+    }
+    xhr.send();
+  };
+
+  /* Get data state from RELAY 1 */
+  // setInterval(function () {
+  //   var xhttp = new XMLHttpRequest();
+  //   xhttp.onreadystatechange = function () {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       var oldState = document.getElementById("relay1").textContent;
+  //       var newState;
+  //       if (this.responseText == "0") // Relay ON
+  //       {
+  //         newState = "ON";
+  //       }
+  //       else // Relay OFF
+  //       {
+  //         newState = "OFF";
+  //       }
+
+  //       if (oldState != newState) // Only update when it change!
+  //       {
+  //         document.getElementById("relay1").innerHTML = newState;
+  //         if (newState == "ON") {
+  //           document.getElementById("4").checked = true;
+  //         }
+  //         else {
+  //           document.getElementById("4").checked = false;
+  //         }
+  //       }
+  //     }
+  //   };
+  //   xhttp.open("GET", "/relay1", true);
+  //   xhttp.send();
+  // }, 100);
+
+  /* Get data state from RELAY 2 */
+  // setInterval(function () {
+  //   var xhttp = new XMLHttpRequest();
+  //   xhttp.onreadystatechange = function () {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       var oldState = document.getElementById("relay2").textContent;
+  //       var newState;
+  //       if (this.responseText == "0") // Relay ON
+  //       {
+  //         newState = "ON";
+  //       }
+  //       else // Relay OFF
+  //       {
+  //         newState = "OFF";
+  //       }
+
+  //       if (oldState != newState) // Only update when it change!
+  //       {
+  //         document.getElementById("relay2").innerHTML = newState;
+  //         if (newState == "ON") {
+  //           document.getElementById("5").checked = true;
+  //         }
+  //         else {
+  //           document.getElementById("5").checked = false;
+  //         }
+  //       }
+  //     }
+  //   };
+  //   xhttp.open("GET", "/relay2", true);
+  //   xhttp.send();
+  // }, 100);
+
+  /* Get data state from RELAY 3 */
+  // setInterval(function () {
+  //   var xhttp = new XMLHttpRequest();
+  //   xhttp.onreadystatechange = function () {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       var oldState = document.getElementById("relay3").textContent;
+  //       var newState;
+  //       if (this.responseText == "0") // Relay ON
+  //       {
+  //         newState = "ON";
+  //       }
+  //       else // Relay OFF
+  //       {
+  //         newState = "OFF";
+  //       }
+
+  //       if (oldState != newState) // Only update when it change!
+  //       {
+  //         document.getElementById("relay3").innerHTML = newState;
+  //         if (newState == "ON") {
+  //           document.getElementById("12").checked = true;
+  //         }
+  //         else {
+  //           document.getElementById("12").checked = false;
+  //         }
+  //       }
+  //     }
+  //   };
+  //   xhttp.open("GET", "/relay3", true);
+  //   xhttp.send();
+  // }, 100);
+
+  /* Get data state from RELAY 4 */
+  // setInterval(function () {
+  //   var xhttp = new XMLHttpRequest();
+  //   xhttp.onreadystatechange = function () {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       var oldState = document.getElementById("relay4").textContent;
+  //       var newState;
+  //       if (this.responseText == "0") // Relay ON
+  //       {
+  //         newState = "ON";
+  //       }
+  //       else // Relay OFF
+  //       {
+  //         newState = "OFF";
+  //       }
+
+  //       if (oldState != newState) // Only update when it change!
+  //       {
+  //         document.getElementById("relay4").innerHTML = newState;
+  //         if (newState == "ON") {
+  //           document.getElementById("13").checked = true;
+  //         }
+  //         else {
+  //           document.getElementById("13").checked = false;
+  //         }
+  //       }
+  //     }
+  //   };
+  //   xhttp.open("GET", "/relay4", true);
+  //   xhttp.send();
+  // }, 100);
+
+  if (!!window.EventSource) {
+    var source = new EventSource('/events');
+
+    /* --------------------------------------------------------------------- */
+
+    source.addEventListener('open', function (e) {
+      console.log("Events Connected");
+    }, false);
+
+    source.addEventListener('error', function (e) {
+      if (e.target.readyState != EventSource.OPEN) {
+        console.log("Events Disconnected");
+      }
+    }, false);
+
+    source.addEventListener('message', function (e) {
+      console.log("message", e.data);
+    }, false);
+
+    /* --------------------------------------------------------------------- */
+
+    source.addEventListener('relay1', function (e) {
+      console.log("relay1", e.data);
+      document.getElementById("relay1").innerHTML = e.data;
+      //
+      if (e.data == "ON") {
+        document.getElementById("4").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("4").checked = false;
+      }
+    }, false);
+
+    source.addEventListener('relay2', function (e) {
+      console.log("relay2", e.data);
+      document.getElementById("relay2").innerHTML = e.data;
+      //
+      if (e.data == "ON") {
+        document.getElementById("5").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("5").checked = false;
+      }
+    }, false);
+
+    source.addEventListener('relay3', function (e) {
+      console.log("relay3", e.data);
+      document.getElementById("relay3").innerHTML = e.data;
+      //
+      if (e.data == "ON") {
+        document.getElementById("12").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("12").checked = false;
+      }
+    }, false);
+
+    source.addEventListener('relay4', function (e) {
+      console.log("relay4", e.data);
+      document.getElementById("relay4").innerHTML = e.data;
+      //
+      if (e.data == "ON") {
+        document.getElementById("13").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("13").checked = false;
+      }
+    }, false);
+  }
+</script>
+
+</html>

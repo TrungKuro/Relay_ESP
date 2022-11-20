@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <style>
+    html {
+      font-family: Arial;
+      display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+    }
+
+    body {
+      max-width: 600px;
+      margin: 0px auto;
+      padding-bottom: 25px;
+    }
+
+    .btn {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      background-color: #E7E9EB;
+      color: black;
+      font-size: 16px;
+      padding: 16px 30px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+      <tr>
+        <td style="width: 60%; text-align: center;">
+          <h2>TIME - <span id="time">%TIME%</span></h2>
+          <h2>DATE - <span id="date">%DATE%</span></h2>
+        </td>
+        <td style="width: 40%; text-align: center;">
+          <button class="btn" onclick="updateTime()">Update Time</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    function updateTime() {
+      let text = "You want real-time updates for RTC?";
+      if (confirm(text) == true) {
+        const d = new Date();
+        var timeRTC = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        var dateRTC = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+
+        document.getElementById("time").innerHTML = timeRTC;
+        document.getElementById("date").innerHTML = dateRTC;
+      }
+    }
+  </script>
+</body>
+
+</html>

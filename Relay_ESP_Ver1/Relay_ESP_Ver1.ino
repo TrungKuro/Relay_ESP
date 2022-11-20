@@ -153,231 +153,156 @@ const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Demo Relay ESP</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:,">
-<style>
-html {
-display: inline-block;
-margin: 0px auto;
-font-family: Arial;
-text-align: center;
-}
-p {
-font-size: 1.2rem;
-}
-body {
-margin: 0px auto;
-padding-bottom: 25px;
-}
-.topnav {
-overflow: hidden;
-background-color: #00ABB3;
-color: white;
-font-size: 1rem;
-}
-.content {
-padding: 20px;
-}
-.cards {
-margin: 0px auto;
-display: grid;
-grid-gap: 2rem;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-.card {
-padding: 10px;
-background-color: white;
-box-shadow: 2px 2px 12px 1px rgba(178, 178, 178, .5);
-}
-.switch {
-position: relative;
-display: inline-block;
-width: 120px;
-height: 68px;
-cursor: pointer;
-}
-.switch input {
-display: none;
-}
-.slider {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: #B2B2B2;
-border-radius: 6px;
-}
-.slider:before {
-position: absolute;
-content: "";
-height: 52px;
-width: 52px;
-left: 8px;
-bottom: 8px;
-background-color: white;
--webkit-transition: .4s;
-transition: .4s;
-border-radius: 3px;
-}
-input:checked+.slider {
-background-color: #00ABB3;
-}
-input:checked+.slider:before {
--webkit-transform: translateX(52px);
--ms-transform: translateX(52px);
-transform: translateX(52px);
-}
-.center {
-display: flex;
-justify-content: center;
-align-items: center;
-}
-.btn {
-background-color: #EAEAEA;
-color: black;
-font-size: 16px;
-padding: 16px 30px;
-border: none;
-cursor: pointer;
-border-radius: 5px;
-text-align: center;
-}
-.btn:hover {
-background-color: #3C4048;
-color: white;
-}
-</style>
+  <title>Demo Relay ESP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <style>
+    html {
+      font-family: Arial;
+      display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+    }
+    body {
+      max-width: 600px;
+      margin: 0px auto;
+      padding-bottom: 25px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 120px;
+      height: 68px
+    }
+    .switch input {
+      display: none
+    }
+    .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 6px
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 52px;
+      width: 52px;
+      left: 8px;
+      bottom: 8px;
+      background-color: #fff;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 3px
+    }
+    input:checked+.slider {
+      background-color: #b30000
+    }
+    input:checked+.slider:before {
+      -webkit-transform: translateX(52px);
+      -ms-transform: translateX(52px);
+      transform: translateX(52px)
+    }
+  </style>
 </head>
 <body>
-<div class="topnav">
-<h1>Relay ESP8266 (RTC)</h1>
-</div>
-<div class="content">
-<div class="cards" style="max-width: 100&#37;;">
-<div class="card">
-<p>TIME - <span id="time">%TIME%</span></p>
-<p>DATE - <span id="date">%DATE%</span></p>
-</div>
-<div class="center">
-<button class="btn" style="height: 100&#37;; width: 100&#37;;" onclick="updateTime()">
-<h3>Update Time</h3>
-</button>
-</div>
-</div>
-</div>
-<div class="content">
-<div class="cards" style="max-width: 100&#37;;">
-%RELAY%
-</div>
-</div>
-<script>
-setInterval(function () {
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function () {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("time").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "/time", true);
-xhttp.send();
-}, 1000);
-setInterval(function () {
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function () {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("date").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "/date", true);
-xhttp.send();
-}, 1000);
-function updateTime() {
-let text = "You want real-time updates for RTC?";
-if (confirm(text) == true) {
-const rtc = new Date();
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "/rtc?Y=" + rtc.getFullYear()
-+ "&M=" + (rtc.getMonth() + 1)
-+ "&D=" + rtc.getDate()
-+ "&h=" + rtc.getHours()
-+ "&m=" + rtc.getMinutes()
-+ "&s=" + rtc.getSeconds(), true);
-xhr.send();
-}
-}
-function toggleCheckbox(element, relay) {
-var stateRelay = document.getElementById(relay);
-var xhr = new XMLHttpRequest();
-if (element.checked) {
-stateRelay.innerHTML = "ON";
-xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
-}
-else {
-stateRelay.innerHTML = "OFF";
-xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
-}
-xhr.send();
-};
-if (!!window.EventSource) {
-var source = new EventSource('/events');
-source.addEventListener('open', function (e) {
-console.log("Events Connected");
-}, false);
-
-source.addEventListener('error', function (e) {
-if (e.target.readyState != EventSource.OPEN) {
-console.log("Events Disconnected");
-}
-}, false);
-
-source.addEventListener('message', function (e) {
-console.log("message", e.data);
-}, false);
-source.addEventListener('relay1', function (e) {
-console.log("relay1", e.data);
-document.getElementById("relay1").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("4").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("4").checked = false;
-}
-}, false);
-source.addEventListener('relay2', function (e) {
-console.log("relay2", e.data);
-document.getElementById("relay2").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("5").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("5").checked = false;
-}
-}, false);
-source.addEventListener('relay3', function (e) {
-console.log("relay3", e.data);
-document.getElementById("relay3").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("12").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("12").checked = false;
-}
-}, false);
-source.addEventListener('relay4', function (e) {
-console.log("relay4", e.data);
-document.getElementById("relay4").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("13").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("13").checked = false;
-}
-}, false);
-}
-</script>
+  <h1>ESP8266 Relay (RTC) Server</h1>
+  <h2>TIME - <span id="time">%TIME%</span></h2>
+  <h2>DATE - <span id="date">%DATE%</span></h2>
+  %RELAY%
 </body>
+<script>
+  setInterval(function () {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("time").innerHTML = this.responseText;
+      }
+    };
+    xhttp.open("GET", "/time", true);
+    xhttp.send();
+  }, 1000);
+  setInterval(function () {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("date").innerHTML = this.responseText;
+      }
+    };
+    xhttp.open("GET", "/date", true);
+    xhttp.send();
+  }, 1000);
+  function toggleCheckbox(element, relay) {
+    var stateRelay = document.getElementById(relay);
+    var xhr = new XMLHttpRequest();
+    if (element.checked) {
+      stateRelay.innerHTML = "ON";
+      xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
+    }
+    else {
+      stateRelay.innerHTML = "OFF";
+      xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
+    }
+    xhr.send();
+  };
+  if (!!window.EventSource) {
+    var source = new EventSource('/events');
+    source.addEventListener('open', function (e) {
+      console.log("Events Connected");
+    }, false);
+    source.addEventListener('error', function (e) {
+      if (e.target.readyState != EventSource.OPEN) {
+        console.log("Events Disconnected");
+      }
+    }, false);
+    source.addEventListener('message', function (e) {
+      console.log("message", e.data);
+    }, false);
+    source.addEventListener('relay1', function (e) {
+      console.log("relay1", e.data);
+      document.getElementById("relay1").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("4").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("4").checked = false;
+      }
+    }, false);
+    source.addEventListener('relay2', function (e) {
+      console.log("relay2", e.data);
+      document.getElementById("relay2").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("5").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("5").checked = false;
+      }
+    }, false);
+    source.addEventListener('relay3', function (e) {
+      console.log("relay3", e.data);
+      document.getElementById("relay3").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("12").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("12").checked = false;
+      }
+    }, false);
+    source.addEventListener('relay4', function (e) {
+      console.log("relay4", e.data);
+      document.getElementById("relay4").innerHTML = e.data;
+      if (e.data == "ON") {
+        document.getElementById("13").checked = true;
+      }
+      else if (e.data == "OFF") {
+        document.getElementById("13").checked = false;
+      }
+    }, false);
+  }
+</script>
 </html>
 )rawliteral";
 
@@ -435,16 +360,12 @@ String processor(const String &var)
     statusRelay4 = stateRelay(RELAY_4);
 
     String relays = "";
-    relays += "<div class=\"card\"><h3>RELAY 1 - <span id=\"relay1\">" + statusRelay1 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay1')\" id=\"" + String(RELAY_1) + "\" " + stateCheckbox(RELAY_1) + "><span class=\"slider\"></span></label></div>";
-    relays += "<div class=\"card\"><h3>RELAY 2 - <span id=\"relay2\">" + statusRelay2 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay2')\" id=\"" + String(RELAY_2) + "\" " + stateCheckbox(RELAY_2) + "><span class=\"slider\"></span></label></div>";
-    relays += "<div class=\"card\"><h3>RELAY 3 - <span id=\"relay3\">" + statusRelay3 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay3')\" id=\"" + String(RELAY_3) + "\" " + stateCheckbox(RELAY_3) + "><span class=\"slider\"></span></label></div>";
-    relays += "<div class=\"card\"><h3>RELAY 4 - <span id=\"relay4\">" + statusRelay4 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay4')\" id=\"" + String(RELAY_4) + "\" " + stateCheckbox(RELAY_4) + "><span class=\"slider\"></span></label></div>";
+    relays += "<h3>RELAY 1 - <span id=\"relay1\">" + statusRelay1 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay1')\" id=\"" + String(RELAY_1) + "\" " + stateCheckbox(RELAY_1) + "><span class=\"slider\"></span></label>";
+    relays += "<h3>RELAY 2 - <span id=\"relay2\">" + statusRelay2 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay2')\" id=\"" + String(RELAY_2) + "\" " + stateCheckbox(RELAY_2) + "><span class=\"slider\"></span></label>";
+    relays += "<h3>RELAY 3 - <span id=\"relay3\">" + statusRelay3 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay3')\" id=\"" + String(RELAY_3) + "\" " + stateCheckbox(RELAY_3) + "><span class=\"slider\"></span></label>";
+    relays += "<h3>RELAY 4 - <span id=\"relay4\">" + statusRelay4 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay4')\" id=\"" + String(RELAY_4) + "\" " + stateCheckbox(RELAY_4) + "><span class=\"slider\"></span></label>";
     return relays;
   }
-  // else if (var == "@") // Trick use "template processor" print '%' at TEMPLATE_PLACEHOLDER
-  // {
-  //   return "%";
-  // }
 
   return String();
 }
@@ -555,8 +476,8 @@ void setup()
   /* Initialize RTC */
   Wire.begin(SDA, SCL);
   rtc.begin();
-  // delay(500);
-  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); //!!!DEBUG
+  delay(500);
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); //!!!DEBUG
 
   /* Setting the ESP8266 as an Access Point (AP) */
   DEBUG_PRINT(F("Setting AP (Access Point) ..."));
@@ -607,37 +528,21 @@ void setup()
 
   /* ----------------------------------------------------------------------- */
 
-  /* Send a GET request to <ESP_IP>/rtc?Y=<Y>&M=<M>&D=<D>&h=<h>&m=<m>&s=<s> */
-  server.on("/rtc", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-              String Y, M, D, h, m, s;
+  /* Send a GET request to <ESP_IP>/relay1=<String(statusRelay[0])> */
+  // server.on("/relay1", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[0]).c_str()); });
 
-              /* GET value of "Y", "M", "D", "h", "m", "s" */
-              if (request->hasParam("Y") && request->hasParam("M") && request->hasParam("D") && request->hasParam("h") && request->hasParam("m") && request->hasParam("s"))
-              {
-                Y = request->getParam("Y")->value();
-                M = request->getParam("M")->value();
-                D = request->getParam("D")->value();
-                h = request->getParam("h")->value();
-                m = request->getParam("m")->value();
-                s = request->getParam("s")->value();
+  /* Send a GET request to <ESP_IP>/relay2=<String(statusRelay[1])> */
+  // server.on("/relay2", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[1]).c_str()); });
 
-                rtc.adjust(DateTime(Y.toInt(), M.toInt(), D.toInt(), h.toInt(), m.toInt(), s.toInt()));
-              }
-              else
-              {
-                Y = "No message sent";
-                M = "No message sent";
-                D = "No message sent";
-                h = "No message sent";
-                m = "No message sent";
-                s = "No message sent";
-              }
+  /* Send a GET request to <ESP_IP>/relay3=<String(statusRelay[2])> */
+  // server.on("/relay3", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[2]).c_str()); });
 
-              DEBUG_PRINT(h); DEBUG_PRINT(":"); DEBUG_PRINT(m); DEBUG_PRINT(":"); DEBUG_PRINTLN(s);
-              DEBUG_PRINT(D); DEBUG_PRINT("/"); DEBUG_PRINT(M); DEBUG_PRINT("/"); DEBUG_PRINTLN(Y);
-
-              request->send(200, "text/plain", "ok"); });
+  /* Send a GET request to <ESP_IP>/relay4=<String(statusRelay[3])> */
+  // server.on("/relay4", HTTP_GET, [](AsyncWebServerRequest *request)
+  //           { request->send_P(200, "text/plain", String(statusRelay[3]).c_str()); });
 
   /* ----------------------------------------------------------------------- */
 

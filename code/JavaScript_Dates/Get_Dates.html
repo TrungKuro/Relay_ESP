@@ -1,0 +1,54 @@
+<!-- -------------------------- Window confirm() -------------------------- -->
+<!-- -------- https://www.w3schools.com/jsref/met_win_confirm.asp --------- -->
+
+<!-- --------------------------- onclick Event ---------------------------- -->
+<!-- --------- https://www.w3schools.com/jsref/event_onclick.asp ---------- -->
+
+<!DOCTYPE html>
+<html>
+
+<body>
+  <h1>JavaScript Dates</h1>
+
+  <h2>The getHours() Method</h2>
+  <p>Return the hours of a date as a number (0-23):</p>
+
+  <h2>The getMinutes() Method</h2>
+  <p>Returns the minutes of a date as a number (0-59):</p>
+
+  <h2>The getSeconds() Method</h2>
+  <p>Return the seconds of a date as a number (0-59):</p>
+
+  <p id="time"></p>
+
+  <h2>The getDate() Method</h2>
+  <p>Return the day of a date as a number (1-31):</p>
+
+  <h2>The getMonth() Method</h2>
+  <p>Return the month of a date as a number from 0 to 11.</p>
+  <p>To get the correct month number, you must add 1:</p>
+
+  <h2>The getFullYear() Method</h2>
+  <p>Return the full year of a date object:</p>
+
+  <p id="date"></p>
+
+  <button onclick="updateTime()">Update Time</button>
+
+  <script>
+    function updateTime() {
+      let text = "You want real-time updates for RTC?";
+      if (confirm(text) == true) {
+        const d = new Date();
+        var timeRTC = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        var dateRTC = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+
+        document.getElementById("time").innerHTML = timeRTC;
+        document.getElementById("date").innerHTML = dateRTC;
+      }
+    }
+  </script>
+
+</body>
+
+</html>
