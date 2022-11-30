@@ -12,7 +12,7 @@
   <title>Demo Relay ESP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- <meta charset="UTF-8"> -->
-  <link rel="icon" href="data:,">
+  <!-- <link rel="icon" href="data:,"> -->
   <style>
     html {
       display: inline-block;
@@ -21,13 +21,16 @@
       text-align: center;
     }
 
-    p {
-      font-size: 1.2rem;
-    }
-
     body {
       margin: 0px auto;
-      padding-bottom: 25px;
+      padding-bottom: 5px;
+    }
+
+    p {
+      display: inline-block;
+      text-align: justify;
+      font-size: 1rem;
+      line-height: 175%;
     }
 
     /* ------------------------------- HEADER ------------------------------ */
@@ -39,7 +42,7 @@
       font-size: 1rem;
     }
 
-    /* -------------------------------- CARD ------------------------------- */
+    /* ----------------------------- CARD RELAY ---------------------------- */
 
     .content {
       padding: 20px;
@@ -49,7 +52,7 @@
       /* max-width: 100%; */
       margin: 0px auto;
       display: grid;
-      grid-gap: 2rem;
+      grid-gap: 1.5rem;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
@@ -59,7 +62,7 @@
       box-shadow: 2px 2px 12px 1px rgba(178, 178, 178, .5);
     }
 
-    /* ------------------------------- RELAY ------------------------------- */
+    /* ---------------------------- SWITCH RELAY --------------------------- */
 
     .switch {
       position: relative;
@@ -106,7 +109,7 @@
       transform: translateX(52px);
     }
 
-    /* ------------------------------- BUTTON ------------------------------ */
+    /* ------------------------- BUTTON UPDATE TIME ------------------------ */
 
     .center {
       display: flex;
@@ -114,27 +117,155 @@
       align-items: center;
     }
 
-    .btn {
+    .btnTime {
+      /* height: 100%;
+      width: 100%; */
       background-color: #EAEAEA;
       color: black;
+      cursor: pointer;
       font-size: 16px;
       padding: 16px 30px;
       border: none;
-      cursor: pointer;
       border-radius: 5px;
       text-align: center;
     }
 
-    .btn:hover {
+    .btnTime:hover {
       background-color: #3C4048;
       color: white;
+    }
+
+    /* -------------------------- ADVANCED FEATURE ------------------------- */
+
+    .collapsible {
+      /* width: 100%; */
+      background-color: #EAEAEA;
+      color: black;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 18px;
+      border: none;
+      text-align: left;
+      outline: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .active,
+    .collapsible:hover {
+      background-color: #3C4048;
+      color: white;
+    }
+
+    .collapsible:after {
+      /* Unicode character for "plus" sign (+) */
+      content: "\002B";
+      color: black;
+      font-size: 32px;
+      font-weight: bold;
+      float: right;
+      margin-left: 15px;
+    }
+
+    .collapsible:hover::after {
+      color: white;
+    }
+
+    .active:after {
+      /* Unicode character for "minus" sign (-) */
+      content: "\2212";
+      color: white;
+    }
+
+    .contentAdv {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .8s ease-out;
+      background-color: #EAEAEA;
+    }
+
+    /* --------------------------- CARD ADVANCED --------------------------- */
+
+    .cardsAdv {
+      /* max-width: 100%; */
+      display: grid;
+      grid-gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      margin: 18px;
+    }
+
+    .cardAdv {
+      background-color: white;
+      box-shadow: 2px 2px 12px 1px rgba(60, 64, 72, .5);
+    }
+
+    .titleAdv {
+      /* width: 100%; */
+      background-color: #F3EFE0;
+      display: inline-block;
+    }
+
+    .textAdv {
+      padding: 10px;
+    }
+
+    /* ---------------------------- INPUT TIMER ---------------------------- */
+
+    input[type=number] {
+      /* 2REM (32px) + 0.25REM */
+      width: 36px;
+
+      border: none;
+      border-bottom: 1px solid #B2B2B2;
+      font-family: Arial;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+
+    input[type=radio]:after {
+      width: 15px;
+      height: 15px;
+      border-radius: 15px;
+
+      /* Add -1px for border-solid 1px (+1) */
+      /* Add -2px for border-radius 11px (+2)*2 */
+      top: -3px;
+      left: -3px;
+
+      position: relative;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+
+      cursor: pointer;
+
+      background-color: #EAEAEA;
+      border: 2px solid #B2B2B2;
+    }
+
+    input[type=radio]:checked:after {
+      background-color: #3C4048;
+    }
+
+    input[type=time] {
+      border: none;
+      border-bottom: 1px solid #B2B2B2;
+      font-family: Arial;
+      font-size: 1rem;
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
   <div class="topnav">
-    <h1>Relay ESP8266 (RTC)</h1>
+    <h1>RELAY ESP8266 (RTC)</h1>
   </div>
 
   <!-- -------------------------------------------------------------------- -->
@@ -142,11 +273,12 @@
   <div class="content">
     <div class="cards" style="max-width: 100&#37;;">
       <div class="card">
-        <p>TIME - <span id="time">%TIME%</span></p>
-        <p>DATE - <span id="date">%DATE%</span></p>
+        <p>
+          Time ˍ <span id="time">%TIME%</span><br>Date ˍ <span id="date">%DATE%</span>
+        </p>
       </div>
       <div class="center">
-        <button class="btn" style="height: 100&#37;; width: 100&#37;;" onclick="updateTime()">
+        <button class="btnTime" style="height: 100&#37;; width: 100&#37;;" onclick="updateTime()">
           <h3>Update Time</h3>
         </button>
       </div>
@@ -157,36 +289,227 @@
 
   <div class="content">
     <div class="cards" style="max-width: 100&#37;;">
-      %RELAY%
+      <!-- %RELAY% -->
       <!-- ---------------------------------------------------------------- -->
-      <!-- <div class="card">
-        <h3>RELAY 1 - <span id="relay1">statusRelay1</span></h3>
+      <div class="card">
+        <h3>Relay 1 - <span id="relay1">statusRelay1</span></h3>
         <label class="switch">
           <input type="checkbox" onchange="toggleCheckbox(this, 'relay1')" id="String(RELAY_1)" stateCheckbox(RELAY_1)>
           <span class="slider"></span>
         </label>
       </div>
       <div class="card">
-        <h3>RELAY 2 - <span id="relay2">statusRelay2</span></h3>
+        <h3>Relay 2 - <span id="relay2">statusRelay2</span></h3>
         <label class="switch">
           <input type="checkbox" onchange="toggleCheckbox(this, 'relay2')" id="String(RELAY_2)" stateCheckbox(RELAY_2)>
           <span class="slider"></span>
         </label>
       </div>
       <div class="card">
-        <h3>RELAY 3 - <span id="relay3">statusRelay3</span></h3>
+        <h3>Relay 3 - <span id="relay3">statusRelay3</span></h3>
         <label class="switch">
           <input type="checkbox" onchange="toggleCheckbox(this, 'relay3')" id="String(RELAY_3)" stateCheckbox(RELAY_3)>
           <span class="slider"></span>
         </label>
       </div>
       <div class="card">
-        <h3>RELAY 4 - <span id="relay4">statusRelay4</span></h3>
+        <h3>Relay 4 - <span id="relay4">statusRelay4</span></h3>
         <label class="switch">
           <input type="checkbox" onchange="toggleCheckbox(this, 'relay4')" id="String(RELAY_4)" stateCheckbox(RELAY_4)>
           <span class="slider"></span>
         </label>
-      </div> -->
+      </div>
+      <!-- ---------------------------------------------------------------- -->
+    </div>
+  </div>
+
+  <hr> <!-- --------------------------------------------------------------- -->
+
+  <div class="content">
+    <button class="collapsible" style="width: 100&#37;;">
+      <h3>Advanced Settings:</h3>
+    </button>
+    <div class="contentAdv">
+      <!-- ---------------------------------------------------------------- -->
+      <button class="collapsible" style="width: 100&#37;;">
+        <h3>Device 1</h3>
+      </button>
+      <div class="contentAdv">
+        <div class="cardsAdv" style="max-width: 100&#37;;">
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x23F2; TIMER</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ After <input type="number" id="h1" name="h1" min="0" max="23" value="0" required>H:<input
+                  type="number" id="m1" name="m1" min="0" max="59" value="0" required>M:<input type="number" id="s1"
+                  name="s1" min="0" max="59" value="0" required>S
+                <br>
+                ➞ Then ON <input type="radio" id="on1" name="tim1" value="0"> or OFF <input type="radio" id="off1"
+                  name="tim1" value="1" checked>
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x1F4C6; CALENDAR</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ ON at <input type="time" id="calOn1" name="calOn1">
+                <br>
+                ➞ OFF at <input type="time" id="calOff1" name="calOff1">
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------- -->
+      <button class="collapsible" style="width: 100&#37;;">
+        <h3>Device 2</h3>
+      </button>
+      <div class="contentAdv">
+        <div class="cardsAdv" style="max-width: 100&#37;;">
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x23F2; TIMER</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ After <input type="number" id="h2" name="h2" min="0" max="23" value="0" required>H:<input
+                  type="number" id="m2" name="m2" min="0" max="59" value="0" required>M:<input type="number" id="s2"
+                  name="s2" min="0" max="59" value="0" required>S
+                <br>
+                ➞ Then ON <input type="radio" id="on2" name="tim2" value="0"> or OFF <input type="radio" id="off2"
+                  name="tim2" value="1" checked>
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x1F4C6; CALENDAR</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ ON at <input type="time" id="calOn2" name="calOn2">
+                <br>
+                ➞ OFF at <input type="time" id="calOff2" name="calOff2">
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------- -->
+      <button class="collapsible" style="width: 100&#37;;">
+        <h3>Device 3</h3>
+      </button>
+      <div class="contentAdv">
+        <div class="cardsAdv" style="max-width: 100&#37;;">
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x23F2; TIMER</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ After <input type="number" id="h3" name="h3" min="0" max="23" value="0" required>H:<input
+                  type="number" id="m3" name="m3" min="0" max="59" value="0" required>M:<input type="number" id="s3"
+                  name="s3" min="0" max="59" value="0" required>S
+                <br>
+                ➞ Then ON <input type="radio" id="on3" name="tim3" value="0"> or OFF <input type="radio" id="off3"
+                  name="tim3" value="1" checked>
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x1F4C6; CALENDAR</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ ON at <input type="time" id="calOn3" name="calOn3">
+                <br>
+                ➞ OFF at <input type="time" id="calOff3" name="calOff3">
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ---------------------------------------------------------------- -->
+      <button class="collapsible" style="width: 100&#37;;">
+        <h3>Device 4</h3>
+      </button>
+      <div class="contentAdv">
+        <div class="cardsAdv" style="max-width: 100&#37;;">
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x23F2; TIMER</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ After <input type="number" id="h4" name="h4" min="0" max="23" value="0" required>H:<input
+                  type="number" id="m4" name="m4" min="0" max="59" value="0" required>M:<input type="number" id="s4"
+                  name="s4" min="0" max="59" value="0" required>S
+                <br>
+                ➞ Then ON <input type="radio" id="on4" name="tim4" value="0"> or OFF <input type="radio" id="off4"
+                  name="tim4" value="1" checked>
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="cardAdv">
+            <div class="titleAdv" style="width: 100&#37;;">
+              <h3>&#x1F4C6; CALENDAR</h3>
+            </div>
+            <div class="textAdv">
+              <p>
+                ➞ ON at <input type="time" id="calOn4" name="calOn4">
+                <br>
+                ➞ OFF at <input type="time" id="calOff4" name="calOff4">
+              </p>
+              <hr>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- ---------------------------------------------------------------- -->
     </div>
   </div>
@@ -319,6 +642,51 @@
         }
       }, false);
     }
+
+    /* To use the "Collapsible" feature */
+    var coll = document.getElementsByClassName("collapsible");
+
+    /* Show collapsible of "Advanced Settings" */
+    coll[0].addEventListener("click", function () {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.maxHeight) {
+        coll[0].style.removeProperty("background-color"); // Remove "Special" color
+        //
+        content.style.maxHeight = null;
+      } else {
+        coll[0].style.backgroundColor = "#00ABB3"; // Display "Special" color for easy viewing
+        //
+        var height = 0;
+        for (var i = 1; i < coll.length; i++) {
+          height = height + coll[i].nextElementSibling.scrollHeight;
+        }
+        content.style.maxHeight = (content.scrollHeight + height) + "px";
+      }
+    });
+
+    /* Show each Relay's setting part */
+    for (var i = 1; i < coll.length; i++) {
+      coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+    }
+
+    /* Close "Advanced Settings" when the browser window is resized */
+    window.addEventListener("resize", function () {
+      coll[0].style.removeProperty("background-color"); // Remove "Special" color
+      //
+      for (var i = 0; i < coll.length; i++) {
+        coll[i].classList.remove("active");
+        coll[i].nextElementSibling.style.maxHeight = null;
+      }
+    });
   </script>
 </body>
 
