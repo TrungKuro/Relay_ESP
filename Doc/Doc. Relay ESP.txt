@@ -2,27 +2,46 @@
 
 # About ESP
 
-	ESP8266 Arduino Core
-	-> https://arduino-esp8266.readthedocs.io/en/latest/reference.html
-
-	Giới thiệu về ESP32 - Bắt đầu
-	-> https://www.youtube.com/watch?v=xPlN_Tk3VLQ&t=1s&ab_channel=DroneBotWorkshop
-
-	Using ESP-WROOM-02 Wifi Module As Arduino MCU
-	-> https://www.deviceplus.com/arduino/using-esp-wroom-02-wifi-module-as-arduino-mcu/
+	Welcome to ESP8266 Arduino Core’s documentation!
+	-> https://arduino-esp8266.readthedocs.io/en/latest/index.html
 
 ===================================================================================================
 
-# Mode AP
+# Kiểm tra thông số phần cứng của ESP8266, trên IDE Arduino
 
-	ESP8266 NodeMCU Access Point (AP) for Web Server
-	-> https://randomnerdtutorials.com/esp8266-nodemcu-access-point-ap-web-server/
-	|
-	ESP8266 DHT11/DHT22 Temperature and Humidity Web Server with Arduino IDE
-	-> https://randomnerdtutorials.com/esp8266-dht11dht22-temperature-and-humidity-web-server-with-arduino-ide/
+File -> Examples -> (Examples for Generic ESP8266 Module) ESP8266 -> CheckFlashConfig
+|
+|	Thông số nhận được:
+|
+|	real id:   00164020
+|	Flash real size: 4194304 bytes
+|
+|	Flash ide  size: 4194304 bytes
+|	Flash ide speed: 80000000 Hz
+|	Flash ide mode:  QIO
+|	Flash Chip configuration ok.
 
-	How to Set an ESP32 Access Point (AP) for Web Server
-	-> https://randomnerdtutorials.com/esp32-access-point-ap-web-server/
+# Kiểm tra tần số hiện đang cài đặt cho CPU bằng đoạn code sau
+|
+|	#include "user_interface.h"
+|
+|	void setup() {
+|		Serial.begin(115200);
+|		pinMode(LED_BUILTIN, OUTPUT);
+|	}
+|
+|	void loop() {
+|		digitalWrite(LED_BUILTIN, HIGH);
+|		delay(1000);
+|		digitalWrite(LED_BUILTIN, LOW);
+|		delay(1000);
+|
+|		Serial.println(system_get_cpu_freq());
+|	}
+
+===================================================================================================
+
+# Async Web Server
 
 	ESP8266 NodeMCU Async Web Server – Control Outputs with Arduino IDE (ESPAsyncWebServer library)
 	-> https://randomnerdtutorials.com/esp8266-nodemcu-async-web-server-espasyncwebserver-library/
@@ -33,6 +52,13 @@
 
 	ESP8266 NodeMCU Web Server using Server-Sent Events (Update Sensor Readings Automatically)
 	-> https://randomnerdtutorials.com/esp8266-nodemcu-web-server-sent-events-sse/
+
+===================================================================================================
+
+# Access Point (AP)
+
+	ESP8266 NodeMCU Access Point (AP) for Web Server
+	-> https://randomnerdtutorials.com/esp8266-nodemcu-access-point-ap-web-server/
 
 ===================================================================================================
 
@@ -53,9 +79,6 @@
 
 	WHAT IS SAMPLE RATE OF ANALOGREAD()?
 	-> https://www.esp8266.com/viewtopic.php?t=2915
-
-	ESP32 ADC – Read Analog Values with Arduino IDE
-	-> https://randomnerdtutorials.com/esp32-adc-analog-read-arduino-ide/
 
 ===================================================================================================
 

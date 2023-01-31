@@ -152,232 +152,308 @@ AsyncEventSource events("/events");
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
+
 <head>
-<title>Demo Relay ESP</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:,">
-<style>
-html {
-display: inline-block;
-margin: 0px auto;
-font-family: Arial;
-text-align: center;
-}
-p {
-font-size: 1.2rem;
-}
-body {
-margin: 0px auto;
-padding-bottom: 25px;
-}
-.topnav {
-overflow: hidden;
-background-color: #00ABB3;
-color: white;
-font-size: 1rem;
-}
-.content {
-padding: 20px;
-}
-.cards {
-margin: 0px auto;
-display: grid;
-grid-gap: 2rem;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-.card {
-padding: 10px;
-background-color: white;
-box-shadow: 2px 2px 12px 1px rgba(178, 178, 178, .5);
-}
-.switch {
-position: relative;
-display: inline-block;
-width: 120px;
-height: 68px;
-cursor: pointer;
-}
-.switch input {
-display: none;
-}
-.slider {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: #B2B2B2;
-border-radius: 6px;
-}
-.slider:before {
-position: absolute;
-content: "";
-height: 52px;
-width: 52px;
-left: 8px;
-bottom: 8px;
-background-color: white;
--webkit-transition: .4s;
-transition: .4s;
-border-radius: 3px;
-}
-input:checked+.slider {
-background-color: #00ABB3;
-}
-input:checked+.slider:before {
--webkit-transform: translateX(52px);
--ms-transform: translateX(52px);
-transform: translateX(52px);
-}
-.center {
-display: flex;
-justify-content: center;
-align-items: center;
-}
-.btn {
-background-color: #EAEAEA;
-color: black;
-font-size: 16px;
-padding: 16px 30px;
-border: none;
-cursor: pointer;
-border-radius: 5px;
-text-align: center;
-}
-.btn:hover {
-background-color: #3C4048;
-color: white;
-}
-</style>
+  <title>Demo Relay ESP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <style>
+    html {
+      display: inline-block;
+      margin: 0px auto;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    body {
+      margin: 0px auto;
+      padding-bottom: 25px;
+    }
+
+    /* ------------------------------- HEADER ------------------------------ */
+
+    .topnav {
+      overflow: hidden;
+      background-color: #00ABB3;
+      color: white;
+      font-size: 1rem;
+    }
+
+    /* -------------------------------- CARD ------------------------------- */
+
+    .content {
+      padding: 20px;
+    }
+
+    .cards {
+      /* max-width: 100%; */
+      margin: 0px auto;
+      display: grid;
+      grid-gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .card {
+      padding: 10px;
+      background-color: white;
+      box-shadow: 2px 2px 12px 1px rgba(178, 178, 178, .5);
+    }
+
+    /* ------------------------------- RELAY ------------------------------- */
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 120px;
+      height: 68px;
+      cursor: pointer;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #B2B2B2;
+      border-radius: 6px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 52px;
+      width: 52px;
+      left: 8px;
+      bottom: 8px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 3px;
+    }
+
+    input:checked+.slider {
+      background-color: #00ABB3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(52px);
+      -ms-transform: translateX(52px);
+      transform: translateX(52px);
+    }
+
+    /* ------------------------------- BUTTON ------------------------------ */
+
+    .center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn {
+      background-color: #EAEAEA;
+      color: black;
+      font-size: 16px;
+      padding: 16px 30px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #3C4048;
+      color: white;
+    }
+  </style>
 </head>
+
 <body>
-<div class="topnav">
-<h1>Relay ESP8266 (RTC)</h1>
-</div>
-<div class="content">
-<div class="cards" style="max-width: 100&#37;;">
-<div class="card">
-<p>TIME - <span id="time">%TIME%</span></p>
-<p>DATE - <span id="date">%DATE%</span></p>
-</div>
-<div class="center">
-<button class="btn" style="height: 100&#37;; width: 100&#37;;" onclick="updateTime()">
-<h3>Update Time</h3>
-</button>
-</div>
-</div>
-</div>
-<div class="content">
-<div class="cards" style="max-width: 100&#37;;">
-%RELAY%
-</div>
-</div>
-<script>
-setInterval(function () {
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function () {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("time").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "/time", true);
-xhttp.send();
-}, 1000);
-setInterval(function () {
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function () {
-if (this.readyState == 4 && this.status == 200) {
-document.getElementById("date").innerHTML = this.responseText;
-}
-};
-xhttp.open("GET", "/date", true);
-xhttp.send();
-}, 1000);
-function updateTime() {
-let text = "You want real-time updates for RTC?";
-if (confirm(text) == true) {
-const rtc = new Date();
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "/rtc?Y=" + rtc.getFullYear()
-+ "&M=" + (rtc.getMonth() + 1)
-+ "&D=" + rtc.getDate()
-+ "&h=" + rtc.getHours()
-+ "&m=" + rtc.getMinutes()
-+ "&s=" + rtc.getSeconds(), true);
-xhr.send();
-}
-}
-function toggleCheckbox(element, relay) {
-var stateRelay = document.getElementById(relay);
-var xhr = new XMLHttpRequest();
-if (element.checked) {
-stateRelay.innerHTML = "ON";
-xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
-}
-else {
-stateRelay.innerHTML = "OFF";
-xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
-}
-xhr.send();
-};
-if (!!window.EventSource) {
-var source = new EventSource('/events');
-source.addEventListener('open', function (e) {
-console.log("Events Connected");
-}, false);
+  <div class="topnav">
+    <h1>Relay ESP8266 (RTC)</h1>
+  </div>
 
-source.addEventListener('error', function (e) {
-if (e.target.readyState != EventSource.OPEN) {
-console.log("Events Disconnected");
-}
-}, false);
+  <!-- -------------------------------------------------------------------- -->
 
-source.addEventListener('message', function (e) {
-console.log("message", e.data);
-}, false);
-source.addEventListener('relay1', function (e) {
-console.log("relay1", e.data);
-document.getElementById("relay1").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("4").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("4").checked = false;
-}
-}, false);
-source.addEventListener('relay2', function (e) {
-console.log("relay2", e.data);
-document.getElementById("relay2").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("5").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("5").checked = false;
-}
-}, false);
-source.addEventListener('relay3', function (e) {
-console.log("relay3", e.data);
-document.getElementById("relay3").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("12").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("12").checked = false;
-}
-}, false);
-source.addEventListener('relay4', function (e) {
-console.log("relay4", e.data);
-document.getElementById("relay4").innerHTML = e.data;
-if (e.data == "ON") {
-document.getElementById("13").checked = true;
-}
-else if (e.data == "OFF") {
-document.getElementById("13").checked = false;
-}
-}, false);
-}
-</script>
+  <div class="content">
+    <div class="cards" style="max-width: 100&#37;;">
+      <div class="card">
+        <p>TIME - <span id="time">%TIME%</span></p>
+        <p>DATE - <span id="date">%DATE%</span></p>
+      </div>
+      <div class="center">
+        <button class="btn" style="height: 100&#37;; width: 100&#37;;" onclick="updateTime()">
+          <h3>Update Time</h3>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- -------------------------------------------------------------------- -->
+
+  <div class="content">
+    <div class="cards" style="max-width: 100&#37;;">
+      %RELAY%
+      <!-- ---------------------------------------------------------------- -->
+      <!-- <div class="card">
+        <h3>RELAY 1 - <span id="relay1">statusRelay1</span></h3>
+        <label class="switch">
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay1')" id='1' stateCheckbox(RELAY_1)>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="card">
+        <h3>RELAY 2 - <span id="relay2">statusRelay2</span></h3>
+        <label class="switch">
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay2')" id='2' stateCheckbox(RELAY_2)>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="card">
+        <h3>RELAY 3 - <span id="relay3">statusRelay3</span></h3>
+        <label class="switch">
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay3')" id='3' stateCheckbox(RELAY_3)>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="card">
+        <h3>RELAY 4 - <span id="relay4">statusRelay4</span></h3>
+        <label class="switch">
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay4')" id='4' stateCheckbox(RELAY_4)>
+          <span class="slider"></span>
+        </label>
+      </div> -->
+      <!-- ---------------------------------------------------------------- -->
+    </div>
+  </div>
+
+  <!-- -------------------------------------------------------------------- -->
+
+  <script>
+    /* Get data TIME from RTC */
+    setInterval(function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("time").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "/time", true);
+      xhttp.send();
+    }, 1000);
+
+    /* Get data DATE from RTC */
+    setInterval(function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("date").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "/date", true);
+      xhttp.send();
+    }, 1000);
+
+    /* Update TIME and DATE for RTC, by send data to ESP */
+    function updateTime() {
+      let text = "You want real-time updates for RTC?";
+      if (confirm(text) == true) {
+        const rtc = new Date();
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/rtc?Y=" + rtc.getFullYear()
+          + "&M=" + (rtc.getMonth() + 1)
+          + "&D=" + rtc.getDate()
+          + "&h=" + rtc.getHours()
+          + "&m=" + rtc.getMinutes()
+          + "&s=" + rtc.getSeconds(), true);
+        xhr.send();
+      }
+    }
+
+    /* Send data state of RELAY (HTTP GET) to ESP */
+    function toggleCheckbox(element, relay) {
+      var stateRelay = document.getElementById(relay); // Get ID of that Relay
+      var xhr = new XMLHttpRequest();
+      if (element.checked) {
+        stateRelay.innerHTML = "ON"; // Display state of that Relay
+        xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
+      }
+      else {
+        stateRelay.innerHTML = "OFF"; // Display state of that Relay
+        xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
+      }
+      xhr.send();
+    };
+
+    /* Web Server using Server-Sent Events */
+    if (!!window.EventSource) {
+      var source = new EventSource('/events');
+
+      /* ------------------------------------------------------------------- */
+
+      source.addEventListener('open', function (e) {
+        console.log("Events Connected");
+      }, false);
+
+      source.addEventListener('error', function (e) {
+        if (e.target.readyState != EventSource.OPEN) {
+          console.log("Events Disconnected");
+        }
+      }, false);
+
+      /* ------------------------------------------------------------------- */
+
+      source.addEventListener('relay1', function (e) {
+        document.getElementById("relay1").innerHTML = e.data;
+        if (e.data == "ON") {
+          document.getElementById("1").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("1").checked = false;
+        }
+      }, false);
+
+      source.addEventListener('relay2', function (e) {
+        document.getElementById("relay2").innerHTML = e.data;
+        if (e.data == "ON") {
+          document.getElementById("2").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("2").checked = false;
+        }
+      }, false);
+
+      source.addEventListener('relay3', function (e) {
+        document.getElementById("relay3").innerHTML = e.data;
+        if (e.data == "ON") {
+          document.getElementById("3").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("3").checked = false;
+        }
+      }, false);
+
+      source.addEventListener('relay4', function (e) {
+        document.getElementById("relay4").innerHTML = e.data;
+        if (e.data == "ON") {
+          document.getElementById("4").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("4").checked = false;
+        }
+      }, false);
+    }
+  </script>
 </body>
+
 </html>
 )rawliteral";
 
@@ -435,16 +511,12 @@ String processor(const String &var)
     statusRelay4 = stateRelay(RELAY_4);
 
     String relays = "";
-    relays += "<div class=\"card\"><h3>RELAY 1 - <span id=\"relay1\">" + statusRelay1 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay1')\" id=\"" + String(RELAY_1) + "\" " + stateCheckbox(RELAY_1) + "><span class=\"slider\"></span></label></div>";
-    relays += "<div class=\"card\"><h3>RELAY 2 - <span id=\"relay2\">" + statusRelay2 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay2')\" id=\"" + String(RELAY_2) + "\" " + stateCheckbox(RELAY_2) + "><span class=\"slider\"></span></label></div>";
-    relays += "<div class=\"card\"><h3>RELAY 3 - <span id=\"relay3\">" + statusRelay3 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay3')\" id=\"" + String(RELAY_3) + "\" " + stateCheckbox(RELAY_3) + "><span class=\"slider\"></span></label></div>";
-    relays += "<div class=\"card\"><h3>RELAY 4 - <span id=\"relay4\">" + statusRelay4 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay4')\" id=\"" + String(RELAY_4) + "\" " + stateCheckbox(RELAY_4) + "><span class=\"slider\"></span></label></div>";
+    relays += "<div class=\"card\"><h3>RELAY 1 - <span id=\"relay1\">" + statusRelay1 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay1')\" id='1' " + stateCheckbox(RELAY_1) + "><span class=\"slider\"></span></label></div>";
+    relays += "<div class=\"card\"><h3>RELAY 2 - <span id=\"relay2\">" + statusRelay2 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay2')\" id='2' " + stateCheckbox(RELAY_2) + "><span class=\"slider\"></span></label></div>";
+    relays += "<div class=\"card\"><h3>RELAY 3 - <span id=\"relay3\">" + statusRelay3 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay3')\" id='3' " + stateCheckbox(RELAY_3) + "><span class=\"slider\"></span></label></div>";
+    relays += "<div class=\"card\"><h3>RELAY 4 - <span id=\"relay4\">" + statusRelay4 + "</span></h3><label class=\"switch\"><input type=\"checkbox\" onchange=\"toggleCheckbox(this, 'relay4')\" id='4' " + stateCheckbox(RELAY_4) + "><span class=\"slider\"></span></label></div>";
     return relays;
   }
-  // else if (var == "@") // Trick use "template processor" print '%' at TEMPLATE_PLACEHOLDER
-  // {
-  //   return "%";
-  // }
 
   return String();
 }
@@ -555,8 +627,6 @@ void setup()
   /* Initialize RTC */
   Wire.begin(SDA, SCL);
   rtc.begin();
-  // delay(500);
-  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); //!!!DEBUG
 
   /* Setting the ESP8266 as an Access Point (AP) */
   DEBUG_PRINT(F("Setting AP (Access Point) ..."));
@@ -589,7 +659,7 @@ void setup()
                       DEBUG_PRINTLN(client->lastId());
                     }
                     /* Send event with message "hello!", id current millis
-                    ** And set reconnect delay to 0.1 second
+                    ** And set reconnect delay to 1 second
                     */
                     client->send("hello!", NULL, millis(), 1000); });
 
@@ -637,7 +707,7 @@ void setup()
               DEBUG_PRINT(h); DEBUG_PRINT(":"); DEBUG_PRINT(m); DEBUG_PRINT(":"); DEBUG_PRINTLN(s);
               DEBUG_PRINT(D); DEBUG_PRINT("/"); DEBUG_PRINT(M); DEBUG_PRINT("/"); DEBUG_PRINTLN(Y);
 
-              request->send(200, "text/plain", "ok"); });
+              request->send(200, "text/plain", "OK"); });
 
   /* ----------------------------------------------------------------------- */
 
@@ -655,21 +725,33 @@ void setup()
 
                 switch (inputMessage1.toInt()) // Update for "statusRelay"
                 {
-                case RELAY_1:
+                case 1:
                   (inputMessage2.toInt()) ? (statusRelay[0] = true) : (statusRelay[0] = false);
                   TRIGGER_RELAY_1;
+                  //
+                  statusRelay1 = stateRelay(RELAY_1);
+                  events.send(statusRelay1.c_str(), "relay1", millis()); // Send Events to the Web Server
                   break;
-                case RELAY_2:
+                case 2:
                   (inputMessage2.toInt()) ? (statusRelay[1] = true) : (statusRelay[1] = false);
                   TRIGGER_RELAY_2;
+                  //
+                  statusRelay2 = stateRelay(RELAY_2);
+                  events.send(statusRelay2.c_str(), "relay2", millis()); // Send Events to the Web Server
                   break;
-                case RELAY_3:
+                case 3:
                   (inputMessage2.toInt()) ? (statusRelay[2] = true) : (statusRelay[2] = false);
                   TRIGGER_RELAY_3;
+                  //
+                  statusRelay3 = stateRelay(RELAY_3);
+                  events.send(statusRelay3.c_str(), "relay3", millis()); // Send Events to the Web Server
                   break;
-                case RELAY_4:
+                case 4:
                   (inputMessage2.toInt()) ? (statusRelay[3] = true) : (statusRelay[3] = false);
                   TRIGGER_RELAY_4;
+                  //
+                  statusRelay4 = stateRelay(RELAY_4);
+                  events.send(statusRelay4.c_str(), "relay4", millis()); // Send Events to the Web Server
                   break;
                 }
               }
@@ -706,7 +788,6 @@ void loop()
       statusRelay1 = stateRelay(RELAY_1);
 
       /* Send Events to the Web Server */
-      events.send("ping", NULL, millis());
       events.send(statusRelay1.c_str(), "relay1", millis());
       break;
     case '2':
@@ -715,7 +796,6 @@ void loop()
       statusRelay2 = stateRelay(RELAY_2);
 
       /* Send Events to the Web Server */
-      events.send("ping", NULL, millis());
       events.send(statusRelay2.c_str(), "relay2", millis());
       break;
     case '3':
@@ -724,7 +804,6 @@ void loop()
       statusRelay3 = stateRelay(RELAY_3);
 
       /* Send Events to the Web Server */
-      events.send("ping", NULL, millis());
       events.send(statusRelay3.c_str(), "relay3", millis());
       break;
     case '4':
@@ -733,7 +812,6 @@ void loop()
       statusRelay4 = stateRelay(RELAY_4);
 
       /* Send Events to the Web Server */
-      events.send("ping", NULL, millis());
       events.send(statusRelay4.c_str(), "relay4", millis());
       break;
     }

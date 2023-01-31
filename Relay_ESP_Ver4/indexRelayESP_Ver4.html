@@ -1,18 +1,10 @@
-<!-- --------- Note: "%@%" is TEMPLATE_PLACEHOLDER for '%' at CSS --------- -->
-<!-- ------ At HTML we can use HTML Encoding "&#37;" instead for '%' ------ -->
-<!-- ------------------ Need use <meta charset="UTF-8"> ------------------- -->
-
-<!-- --------------- After thinking about it, I realized... --------------- -->
-<!-- ----- I could use "escape characters" for CSS right in the HTML ------ -->
-
 <!DOCTYPE HTML>
 <html>
 
 <head>
   <title>Demo Relay ESP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <meta charset="UTF-8"> -->
-  <!-- <link rel="icon" href="data:,"> -->
+  <link rel="icon" href="data:,">
   <style>
     html {
       display: inline-block;
@@ -130,7 +122,8 @@
       text-align: center;
     }
 
-    .btnTime:hover {
+    .btnTime:hover,
+    .btnTime:active {
       background-color: #3C4048;
       color: white;
     }
@@ -153,7 +146,8 @@
     }
 
     .active,
-    .collapsible:hover {
+    .collapsible:hover,
+    .collapsible:active {
       background-color: #3C4048;
       color: white;
     }
@@ -168,7 +162,8 @@
       margin-left: 15px;
     }
 
-    .collapsible:hover::after {
+    .collapsible:hover::after,
+    .collapsible:active::after {
       color: white;
     }
 
@@ -273,8 +268,10 @@
   <div class="content">
     <div class="cards" style="max-width: 100&#37;;">
       <div class="card">
-        <p>
-          Time ˍ <span id="time">%TIME%</span><br>Date ˍ <span id="date">%DATE%</span>
+        <p style="text-align: center;">
+          TIME - <span id="time">%TIME%</span>
+          <br>
+          DATE - <span id="date">%DATE%</span>
         </p>
       </div>
       <div class="center">
@@ -289,36 +286,36 @@
 
   <div class="content">
     <div class="cards" style="max-width: 100&#37;;">
-      <!-- %RELAY% -->
+      %RELAY%
       <!-- ---------------------------------------------------------------- -->
-      <div class="card">
+      <!-- <div class="card">
         <h3>Relay 1 - <span id="relay1">statusRelay1</span></h3>
         <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay1')" id="String(RELAY_1)" stateCheckbox(RELAY_1)>
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay1')" id='1' stateCheckbox(RELAY_1)>
           <span class="slider"></span>
         </label>
       </div>
       <div class="card">
         <h3>Relay 2 - <span id="relay2">statusRelay2</span></h3>
         <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay2')" id="String(RELAY_2)" stateCheckbox(RELAY_2)>
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay2')" id='2' stateCheckbox(RELAY_2)>
           <span class="slider"></span>
         </label>
       </div>
       <div class="card">
         <h3>Relay 3 - <span id="relay3">statusRelay3</span></h3>
         <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay3')" id="String(RELAY_3)" stateCheckbox(RELAY_3)>
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay3')" id='3' stateCheckbox(RELAY_3)>
           <span class="slider"></span>
         </label>
       </div>
       <div class="card">
         <h3>Relay 4 - <span id="relay4">statusRelay4</span></h3>
         <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay4')" id="String(RELAY_4)" stateCheckbox(RELAY_4)>
+          <input type="checkbox" onchange="toggleCheckbox(this, 'relay4')" id='4' stateCheckbox(RELAY_4)>
           <span class="slider"></span>
         </label>
-      </div>
+      </div> -->
       <!-- ---------------------------------------------------------------- -->
     </div>
   </div>
@@ -338,39 +335,44 @@
         <div class="cardsAdv" style="max-width: 100&#37;;">
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x23F2; TIMER</h3>
+              <h3>TIMER</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ After <input type="number" id="h1" name="h1" min="0" max="23" value="0" required>H:<input
-                  type="number" id="m1" name="m1" min="0" max="59" value="0" required>M:<input type="number" id="s1"
-                  name="s1" min="0" max="59" value="0" required>S
+              %TIMER1%
+              <!-- -------------------------------------------------------- -->
+              <!-- <p>
+                . After <input type="number" id="h1" value="String(hourAfter[0])">H:<input type="number" id="m1"
+                  value="String(minuteAfter[0])">M:<input type="number" id="s1" value="String(secondAfter[0])">S
                 <br>
-                ➞ Then ON <input type="radio" id="on1" name="tim1" value="0"> or OFF <input type="radio" id="off1"
-                  name="tim1" value="1" checked>
+                . Then ON <input type="radio" id="on1" name="timer1" value="0" stateTrigON(trigTimer[0])> or OFF <input
+                  type="radio" id="off1" name="timer1" value="1" stateTrigOFF(trigTimer[0])>
               </p>
               <hr>
               <label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" onchange="toggleTimer(this, '1')" id="t1" stateTimer(statusTimer[0])>
                 <span class="slider"></span>
-              </label>
+              </label> -->
+              <!-- -------------------------------------------------------- -->
             </div>
           </div>
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x1F4C6; CALENDAR</h3>
+              <h3>CALENDAR</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ ON at <input type="time" id="calOn1" name="calOn1">
+              %CALENDAR1%
+              <!-- -------------------------------------------------------- -->
+              <!-- <p>
+                . ON at <input type="time" id="calOn1" value="timeON(0)">
                 <br>
-                ➞ OFF at <input type="time" id="calOff1" name="calOff1">
+                . OFF at <input type="time" id="calOff1" value="timeOFF(0)">
               </p>
               <hr>
               <label class="switch">
-                <input type="checkbox">
+                <input type="checkbox" onchange="toggleCalendar(this, '1')" id="c1" stateCalendar(statusCalendar[0])>
                 <span class="slider"></span>
-              </label>
+              </label> -->
+              <!-- -------------------------------------------------------- -->
             </div>
           </div>
         </div>
@@ -383,39 +385,18 @@
         <div class="cardsAdv" style="max-width: 100&#37;;">
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x23F2; TIMER</h3>
+              <h3>TIMER</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ After <input type="number" id="h2" name="h2" min="0" max="23" value="0" required>H:<input
-                  type="number" id="m2" name="m2" min="0" max="59" value="0" required>M:<input type="number" id="s2"
-                  name="s2" min="0" max="59" value="0" required>S
-                <br>
-                ➞ Then ON <input type="radio" id="on2" name="tim2" value="0"> or OFF <input type="radio" id="off2"
-                  name="tim2" value="1" checked>
-              </p>
-              <hr>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-              </label>
+              %TIMER2%
             </div>
           </div>
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x1F4C6; CALENDAR</h3>
+              <h3>CALENDAR</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ ON at <input type="time" id="calOn2" name="calOn2">
-                <br>
-                ➞ OFF at <input type="time" id="calOff2" name="calOff2">
-              </p>
-              <hr>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-              </label>
+              %CALENDAR2%
             </div>
           </div>
         </div>
@@ -428,39 +409,18 @@
         <div class="cardsAdv" style="max-width: 100&#37;;">
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x23F2; TIMER</h3>
+              <h3>TIMER</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ After <input type="number" id="h3" name="h3" min="0" max="23" value="0" required>H:<input
-                  type="number" id="m3" name="m3" min="0" max="59" value="0" required>M:<input type="number" id="s3"
-                  name="s3" min="0" max="59" value="0" required>S
-                <br>
-                ➞ Then ON <input type="radio" id="on3" name="tim3" value="0"> or OFF <input type="radio" id="off3"
-                  name="tim3" value="1" checked>
-              </p>
-              <hr>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-              </label>
+              %TIMER3%
             </div>
           </div>
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x1F4C6; CALENDAR</h3>
+              <h3>CALENDAR</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ ON at <input type="time" id="calOn3" name="calOn3">
-                <br>
-                ➞ OFF at <input type="time" id="calOff3" name="calOff3">
-              </p>
-              <hr>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-              </label>
+              %CALENDAR3%
             </div>
           </div>
         </div>
@@ -473,39 +433,18 @@
         <div class="cardsAdv" style="max-width: 100&#37;;">
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x23F2; TIMER</h3>
+              <h3>TIMER</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ After <input type="number" id="h4" name="h4" min="0" max="23" value="0" required>H:<input
-                  type="number" id="m4" name="m4" min="0" max="59" value="0" required>M:<input type="number" id="s4"
-                  name="s4" min="0" max="59" value="0" required>S
-                <br>
-                ➞ Then ON <input type="radio" id="on4" name="tim4" value="0"> or OFF <input type="radio" id="off4"
-                  name="tim4" value="1" checked>
-              </p>
-              <hr>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-              </label>
+              %TIMER4%
             </div>
           </div>
           <div class="cardAdv">
             <div class="titleAdv" style="width: 100&#37;;">
-              <h3>&#x1F4C6; CALENDAR</h3>
+              <h3>CALENDAR</h3>
             </div>
             <div class="textAdv">
-              <p>
-                ➞ ON at <input type="time" id="calOn4" name="calOn4">
-                <br>
-                ➞ OFF at <input type="time" id="calOff4" name="calOff4">
-              </p>
-              <hr>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider"></span>
-              </label>
+              %CALENDAR4%
             </div>
           </div>
         </div>
@@ -517,6 +456,10 @@
   <!-- -------------------------------------------------------------------- -->
 
   <script>
+    /* --------------------------------------------------------------------- */
+    /*                                  RTC                                  */
+    /* --------------------------------------------------------------------- */
+
     /* Get data TIME from RTC */
     setInterval(function () {
       var xhttp = new XMLHttpRequest();
@@ -557,6 +500,10 @@
       }
     }
 
+    /* --------------------------------------------------------------------- */
+    /*                                 RELAY                                 */
+    /* --------------------------------------------------------------------- */
+
     /* Send data state of RELAY (HTTP GET) to ESP */
     function toggleCheckbox(element, relay) {
       var stateRelay = document.getElementById(relay); // Get ID of that Relay
@@ -588,16 +535,40 @@
         }
       }, false);
 
-      source.addEventListener('message', function (e) {
-        console.log("message", e.data);
-      }, false);
-
       /* ------------------------------------------------------------------- */
 
       source.addEventListener('relay1', function (e) {
-        console.log("relay1", e.data);
         document.getElementById("relay1").innerHTML = e.data;
-        //
+        if (e.data == "ON") {
+          document.getElementById("1").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("1").checked = false;
+        }
+      }, false);
+
+      source.addEventListener('relay2', function (e) {
+        document.getElementById("relay2").innerHTML = e.data;
+        if (e.data == "ON") {
+          document.getElementById("2").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("2").checked = false;
+        }
+      }, false);
+
+      source.addEventListener('relay3', function (e) {
+        document.getElementById("relay3").innerHTML = e.data;
+        if (e.data == "ON") {
+          document.getElementById("3").checked = true;
+        }
+        else if (e.data == "OFF") {
+          document.getElementById("3").checked = false;
+        }
+      }, false);
+
+      source.addEventListener('relay4', function (e) {
+        document.getElementById("relay4").innerHTML = e.data;
         if (e.data == "ON") {
           document.getElementById("4").checked = true;
         }
@@ -606,42 +577,30 @@
         }
       }, false);
 
-      source.addEventListener('relay2', function (e) {
-        console.log("relay2", e.data);
-        document.getElementById("relay2").innerHTML = e.data;
-        //
-        if (e.data == "ON") {
-          document.getElementById("5").checked = true;
+      /* ------------------------------------------------------------------- */
+
+      source.addEventListener('timer', function (e) {
+        if (e.data[0] == "t") {
+          document.getElementById(e.data).checked = false; // Turn-off Timer
         }
-        else if (e.data == "OFF") {
-          document.getElementById("5").checked = false;
+        else {
+          document.getElementById("t" + e.data).checked = true; // Turn-on Timer
         }
       }, false);
 
-      source.addEventListener('relay3', function (e) {
-        console.log("relay3", e.data);
-        document.getElementById("relay3").innerHTML = e.data;
-        //
-        if (e.data == "ON") {
-          document.getElementById("12").checked = true;
+      source.addEventListener('calendar', function (e) {
+        if (e.data[0] == "c") {
+          document.getElementById(e.data).checked = false; // Turn-off Calendar
         }
-        else if (e.data == "OFF") {
-          document.getElementById("12").checked = false;
-        }
-      }, false);
-
-      source.addEventListener('relay4', function (e) {
-        console.log("relay4", e.data);
-        document.getElementById("relay4").innerHTML = e.data;
-        //
-        if (e.data == "ON") {
-          document.getElementById("13").checked = true;
-        }
-        else if (e.data == "OFF") {
-          document.getElementById("13").checked = false;
+        else {
+          document.getElementById("c" + e.data).checked = true; // Turn-on Calendar
         }
       }, false);
     }
+
+    /* --------------------------------------------------------------------- */
+    /*                           INTERFACE EFFECTS                           */
+    /* --------------------------------------------------------------------- */
 
     /* To use the "Collapsible" feature */
     var coll = document.getElementsByClassName("collapsible");
@@ -679,14 +638,63 @@
     }
 
     /* Close "Advanced Settings" when the browser window is resized */
-    window.addEventListener("resize", function () {
-      coll[0].style.removeProperty("background-color"); // Remove "Special" color
-      //
-      for (var i = 0; i < coll.length; i++) {
-        coll[i].classList.remove("active");
-        coll[i].nextElementSibling.style.maxHeight = null;
+    // window.addEventListener("resize", function () {
+    //   coll[0].style.removeProperty("background-color"); // Remove "Special" color
+    //   //
+    //   for (var i = 0; i < coll.length; i++) {
+    //     coll[i].classList.remove("active");
+    //     coll[i].nextElementSibling.style.maxHeight = null;
+    //   }
+    // });
+
+    /* --------------------------------------------------------------------- */
+    /*                                 TIMER                                 */
+    /* --------------------------------------------------------------------- */
+
+    /* Send the info Timer (HTTP GET) to ESP */
+    function toggleTimer(element, device) {
+      var xhr = new XMLHttpRequest();
+      if (element.checked) {
+        var h = document.getElementById("h" + device).value;
+        var m = document.getElementById("m" + device).value;
+        var s = document.getElementById("s" + device).value;
+        //
+        var trig = "";
+        if (document.getElementById("on" + device).checked) {
+          trig = document.getElementById("on" + device).value;
+        }
+        else {
+          trig = document.getElementById("off" + device).value;
+        }
+        //
+        xhr.open("GET", "/timerON?device=" + device + "&h=" + h + "&m=" + m + "&s=" + s + "&trig=" + trig, true);
       }
-    });
+      else {
+        xhr.open("GET", "/timerOFF?device=" + device, true);
+      }
+      xhr.send();
+    };
+
+    /* --------------------------------------------------------------------- */
+    /*                                CALENDAR                               */
+    /* --------------------------------------------------------------------- */
+
+    /* Send the info Calendar (HTTP GET) to ESP */
+    function toggleCalendar(element, device) {
+      var xhr = new XMLHttpRequest();
+      if (element.checked) {
+        var onH = document.getElementById("calOn" + device).value.slice(0, 2);
+        var onM = document.getElementById("calOn" + device).value.slice(3, 5);
+        var offH = document.getElementById("calOff" + device).value.slice(0, 2);
+        var offM = document.getElementById("calOff" + device).value.slice(3, 5);
+        //
+        xhr.open("GET", "/calendarON?device=" + device + "&onH=" + onH + "&onM=" + onM + "&offH=" + offH + "&offM=" + offM, true);
+      }
+      else {
+        xhr.open("GET", "/calendarOFF?device=" + device, true);
+      }
+      xhr.send();
+    };
   </script>
 </body>
 
