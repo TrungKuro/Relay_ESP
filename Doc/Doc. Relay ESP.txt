@@ -21,6 +21,17 @@ File -> Examples -> (Examples for Generic ESP8266 Module) ESP8266 -> CheckFlashC
 |	Flash ide mode:  QIO
 |	Flash Chip configuration ok.
 
+# Tần số thạch anh trên bo ESP8266 thường mặc định là 26MHz
+| Nên khi chỉnh Baudrate 74880bps
+| Ta sẽ có được data sau của ESP ở thời điểm nó "boot"
+|
+|	 ets Jan  8 2013,rst cause:1, boot mode:(3,6)
+|
+|	load 0x4010f000, len 1384, room 16 
+|	tail 8
+|	chksum 0x2d
+|	csum 0x2d
+
 # Kiểm tra tần số hiện đang cài đặt cho CPU bằng đoạn code sau
 |
 |	#include "user_interface.h"
@@ -59,6 +70,12 @@ File -> Examples -> (Examples for Generic ESP8266 Module) ESP8266 -> CheckFlashC
 
 	ESP8266 NodeMCU Access Point (AP) for Web Server
 	-> https://randomnerdtutorials.com/esp8266-nodemcu-access-point-ap-web-server/
+
+	WiFi Access Point
+	-> https://arduino.esp8266.vn/wifi/access-point.html
+
+	Soft Access Point Class
+	-> https://arduino-esp8266.readthedocs.io/en/3.1.1/esp8266wifi/soft-access-point-class.html
 
 ===================================================================================================
 
@@ -119,5 +136,21 @@ File -> Examples -> (Examples for Generic ESP8266 Module) ESP8266 -> CheckFlashC
 
 	HTML Encoding (Character Sets)
 	-> https://www.w3schools.com/html/html_charset.asp
+
+===================================================================================================
+
+# Write Digital
+
+	Arduino - PortManipulation
+	-> https://docs.arduino.cc/hacking/software/PortManipulation
+	|
+	Bit Math Tutorial by CosineKitty
+	-> https://playground.arduino.cc/Code/BitMath/
+	|
+	millis()
+	-> https://www.arduino.cc/reference/en/language/functions/time/millis/
+	|
+	micros()
+	-> https://www.arduino.cc/reference/en/language/functions/time/micros/
 
 ===================================================================================================

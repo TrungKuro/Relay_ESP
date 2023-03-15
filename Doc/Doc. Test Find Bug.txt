@@ -6,8 +6,8 @@
 // #include <Adafruit_Sensor.h>
 // #include <DHT.h>
 
-const char* ssid     = "ESP8266-AP";
-const char* password = "123456789";
+const char* ssid     = "Relay ESP";
+const char* password = "Demo123#";
 
 // #define DHTPIN 5     // Digital pin connected to the DHT sensor
 

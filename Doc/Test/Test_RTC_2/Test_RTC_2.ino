@@ -55,8 +55,10 @@ void loop()
   // char buf4[] = "MM-DD-YYYY";
   // Serial.println(now.toString(buf4));
 
-  char timeBuf[] = "hh:mm:ss";
-  timeRTC = now.toString(timeBuf);
+  // char timeBuf[] = "hh:mm:ss";
+  timeRTC = "hh:mm:ss";
+  // timeRTC = now.toString(timeBuf);
+  timeRTC = now.toString(&timeRTC[0]);
   Serial.println(timeRTC);
 
   char dateBuf[] = "DD/MM/YYYY";
