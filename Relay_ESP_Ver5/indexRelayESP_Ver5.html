@@ -4,7 +4,7 @@
 <head>
   <title>Demo Relay ESP</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:,">
+  <!-- <link rel="icon" href="data:,"> -->
   <style>
     html {
       display: inline-block;
@@ -22,14 +22,14 @@
       display: inline-block;
       text-align: justify;
       font-size: 1rem;
-      line-height: 175%;
+      line-height: 1.75;
     }
 
     /* ------------------------------- HEADER ------------------------------ */
 
     .topnav {
       overflow: hidden;
-      background-color: #00ABB3;
+      background-color: #2A3158;
       color: white;
       font-size: 1rem;
     }
@@ -92,7 +92,7 @@
     }
 
     input:checked+.slider {
-      background-color: #00ABB3;
+      background-color: #757090;
     }
 
     input:checked+.slider:before {
@@ -110,8 +110,8 @@
     }
 
     .btnTime {
-      /* height: 100%;
-      width: 100%; */
+      /* height: 100%; */
+      /* width: 100%; */
       background-color: #EAEAEA;
       color: black;
       cursor: pointer;
@@ -122,9 +122,10 @@
       text-align: center;
     }
 
-    .btnTime:hover,
-    .btnTime:active {
-      background-color: #3C4048;
+    /* Let try only use ".btnTime:hover" */
+    /* Instead of using both ".btnTime:hover" and ".btnTime:active" */
+    .btnTime:hover {
+      background-color: #757090;
       color: white;
     }
 
@@ -148,7 +149,7 @@
     .active,
     .collapsible:hover,
     .collapsible:active {
-      background-color: #3C4048;
+      background-color: #B195A5;
       color: white;
     }
 
@@ -197,7 +198,7 @@
 
     .titleAdv {
       /* width: 100%; */
-      background-color: #F3EFE0;
+      background-color: #FFDD91;
       display: inline-block;
     }
 
@@ -205,17 +206,25 @@
       padding: 10px;
     }
 
-    /* ---------------------------- INPUT TIMER ---------------------------- */
+    /* ------------------------------- INPUT ------------------------------- */
 
-    input[type=number] {
-      /* 2REM (32px) + 0.25REM */
-      width: 36px;
+    p.adv {
+      font-family: monospace;
+    }
 
+    input {
       border: none;
       border-bottom: 1px solid #B2B2B2;
-      font-family: Arial;
+      font-family: monospace;
       font-size: 1rem;
       text-align: center;
+    }
+
+    input[type=number] {
+      filter: grayscale(1);
+
+      /* 2REM (32px) + 0.25REM */
+      width: 36px;
     }
 
     input[type=number]::-webkit-inner-spin-button,
@@ -223,44 +232,33 @@
       opacity: 1;
     }
 
-    input[type=radio]:after {
-      width: 15px;
-      height: 15px;
-      border-radius: 15px;
+    /* ---------------------------- INPUT TIMER ---------------------------- */
 
-      /* Add -1px for border-solid 1px (+1) */
-      /* Add -2px for border-radius 11px (+2)*2 */
-      top: -3px;
-      left: -3px;
-
-      position: relative;
-      content: '';
-      display: inline-block;
-      visibility: visible;
-
+    input[type=radio] {
+      filter: grayscale(1);
       cursor: pointer;
 
-      background-color: #EAEAEA;
-      border: 2px solid #B2B2B2;
+      /* IE 9 */
+      /* -ms-transform: scale(1.2); */
+      /* Chrome, Safari, Opera */
+      /* -webkit-transform: scale(1.2);  */
+      transform: scale(1.2);
     }
 
-    input[type=radio]:checked:after {
-      background-color: #3C4048;
-    }
+    /* --------------------------- INPUT CALENDAR -------------------------- */
 
     input[type=time] {
-      border: none;
-      border-bottom: 1px solid #B2B2B2;
-      font-family: Arial;
-      font-size: 1rem;
-      text-align: center;
+      filter: grayscale(1);
+
+      /* 3*2REM (3*32px) + 1REM */
+      width: 112px;
     }
   </style>
 </head>
 
 <body>
   <div class="topnav">
-    <h1>RELAY ESP8266 (RTC)</h1>
+    <h1>Relay ESP8266 (RTC)</h1>
   </div>
 
   <!-- -------------------------------------------------------------------- -->
@@ -288,32 +286,32 @@
     <div class="cards" style="max-width: 100&#37;;">
       %RELAY%
       <!-- ---------------------------------------------------------------- -->
-      <!-- <div class="card">
-        <h3>Relay 1 - <span id="relay1">statusRelay1</span></h3>
-        <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay1')" id='1' stateCheckbox(RELAY_1)>
-          <span class="slider"></span>
+      <!-- <div class='card'>
+        <h3>RELAY 1 - <span id='relay1'>stateRelay(RELAY_1)</span></h3>
+        <label class='switch'>
+          <input type='checkbox' onchange="toggleCheckbox(this, 'relay1')" id='1' stateCheckbox(RELAY_1)>
+          <span class='slider'></span>
         </label>
       </div>
-      <div class="card">
-        <h3>Relay 2 - <span id="relay2">statusRelay2</span></h3>
-        <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay2')" id='2' stateCheckbox(RELAY_2)>
-          <span class="slider"></span>
+      <div class='card'>
+        <h3>RELAY 2 - <span id='relay2'>stateRelay(RELAY_2)</span></h3>
+        <label class='switch'>
+          <input type='checkbox' onchange="toggleCheckbox(this, 'relay2')" id='2' stateCheckbox(RELAY_2)>
+          <span class='slider'></span>
         </label>
       </div>
-      <div class="card">
-        <h3>Relay 3 - <span id="relay3">statusRelay3</span></h3>
-        <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay3')" id='3' stateCheckbox(RELAY_3)>
-          <span class="slider"></span>
+      <div class='card'>
+        <h3>RELAY 3 - <span id='relay3'>stateRelay(RELAY_3)</span></h3>
+        <label class='switch'>
+          <input type='checkbox' onchange="toggleCheckbox(this, 'relay3')" id='3' stateCheckbox(RELAY_3)>
+          <span class='slider'></span>
         </label>
       </div>
-      <div class="card">
-        <h3>Relay 4 - <span id="relay4">statusRelay4</span></h3>
-        <label class="switch">
-          <input type="checkbox" onchange="toggleCheckbox(this, 'relay4')" id='4' stateCheckbox(RELAY_4)>
-          <span class="slider"></span>
+      <div class='card'>
+        <h3>RELAY 4 - <span id='relay4'>stateRelay(RELAY_4)</span></h3>
+        <label class='switch'>
+          <input type='checkbox' onchange="toggleCheckbox(this, 'relay4')" id='4' stateCheckbox(RELAY_4)>
+          <span class='slider'></span>
         </label>
       </div> -->
       <!-- ---------------------------------------------------------------- -->
@@ -340,17 +338,15 @@
             <div class="textAdv">
               %TIMER1%
               <!-- -------------------------------------------------------- -->
-              <!-- <p>
-                . After <input type="number" id="h1" value="String(hourAfter[0])">H:<input type="number" id="m1"
-                  value="String(minuteAfter[0])">M:<input type="number" id="s1" value="String(secondAfter[0])">S
+              <!-- <p class='adv'>
+                . After <input type='number' id='th1' value='String(hourAfter[INDEX_R1])'>:<input type='number' id='tm1' value='String(minuteAfter[INDEX_R1])'>:<input type='number' id='ts1' value='String(secondAfter[INDEX_R1])'>
                 <br>
-                . Then ON <input type="radio" id="on1" name="timer1" value="0" stateTrigON(trigTimer[0])> or OFF <input
-                  type="radio" id="off1" name="timer1" value="1" stateTrigOFF(trigTimer[0])>
+                . Then ON <input type='radio' id='tOn1' name='timer1' value='0' stateTrigON(trigTimer[INDEX_R1])> or OFF <input type='radio' id='tOff1' name='timer1' value='1' stateTrigOFF(trigTimer[INDEX_R1])>
               </p>
               <hr>
-              <label class="switch">
-                <input type="checkbox" onchange="toggleTimer(this, '1')" id="t1" stateTimer(statusTimer[0])>
-                <span class="slider"></span>
+              <label class='switch'>
+                <input type='checkbox' onchange="toggleTimer(this, '1' )" id='t1' stateTimer(statusTimer[INDEX_R1])>
+                <span class='slider'></span>
               </label> -->
               <!-- -------------------------------------------------------- -->
             </div>
@@ -362,15 +358,15 @@
             <div class="textAdv">
               %CALENDAR1%
               <!-- -------------------------------------------------------- -->
-              <!-- <p>
-                . ON at <input type="time" id="calOn1" value="timeON(0)">
+              <!-- <p class='adv'>
+                . ON at <input type='time' id='cOn1' value='timeCalendar(hourON[INDEX_R1], minuteON[INDEX_R1]);'>
                 <br>
-                . OFF at <input type="time" id="calOff1" value="timeOFF(0)">
+                . OFF at <input type='time' id='cOff1' value='timeCalendar(hourOFF[INDEX_R1], minuteOFF[INDEX_R1]);'>
               </p>
               <hr>
-              <label class="switch">
-                <input type="checkbox" onchange="toggleCalendar(this, '1')" id="c1" stateCalendar(statusCalendar[0])>
-                <span class="slider"></span>
+              <label class='switch'>
+                <input type='checkbox' onchange="toggleCalendar(this, '1')" id='c1' stateCalendar(statusCalendar[INDEX_R1])>
+                <span class='slider'></span>
               </label> -->
               <!-- -------------------------------------------------------- -->
             </div>
@@ -468,7 +464,7 @@
           document.getElementById("time").innerHTML = this.responseText;
         }
       };
-      xhttp.open("GET", "/time", true);
+      xhttp.open("GET", "/t", true);
       xhttp.send();
     }, 1000);
 
@@ -480,11 +476,18 @@
           document.getElementById("date").innerHTML = this.responseText;
         }
       };
-      xhttp.open("GET", "/date", true);
+      xhttp.open("GET", "/d", true);
       xhttp.send();
     }, 1000);
 
-    /* Update TIME and DATE for RTC, by send data to ESP */
+    /* --------------------------------------------------------------------- */
+
+    /**
+     * Update TIME and DATE for RTC, by send data to ESP
+     * 
+     * Ex:
+     * "/rtc?Y=?&M=?&D=?&h=?&m=?&s=?"
+     */
     function updateTime() {
       let text = "You want real-time updates for RTC?";
       if (confirm(text) == true) {
@@ -498,30 +501,36 @@
           + "&s=" + rtc.getSeconds(), true);
         xhr.send();
       }
-    }
+    };
 
     /* --------------------------------------------------------------------- */
     /*                                 RELAY                                 */
     /* --------------------------------------------------------------------- */
 
-    /* Send data state of RELAY (HTTP GET) to ESP */
+    /**
+     * Send data state of RELAY (HTTP GET) to ESP
+     * 
+     * Ex:
+     * "/r?n=1&t=0" → On Relay 1
+     * "/r?n=1&t=1" → Off Relay 1
+     */
     function toggleCheckbox(element, relay) {
       var stateRelay = document.getElementById(relay); // Get ID of that Relay
       var xhr = new XMLHttpRequest();
       if (element.checked) {
         stateRelay.innerHTML = "ON"; // Display state of that Relay
-        xhr.open("GET", "/update?output=" + element.id + "&state=0", true);
+        xhr.open("GET", "/r?n=" + element.id + "&t=0", true);
       }
       else {
         stateRelay.innerHTML = "OFF"; // Display state of that Relay
-        xhr.open("GET", "/update?output=" + element.id + "&state=1", true);
+        xhr.open("GET", "/r?n=" + element.id + "&t=1", true);
       }
       xhr.send();
     };
 
     /* Web Server using Server-Sent Events */
     if (!!window.EventSource) {
-      var source = new EventSource('/events');
+      var source = new EventSource('/e');
 
       /* ------------------------------------------------------------------- */
 
@@ -537,7 +546,7 @@
 
       /* ------------------------------------------------------------------- */
 
-      source.addEventListener('relay1', function (e) {
+      source.addEventListener("1", function (e) {
         document.getElementById("relay1").innerHTML = e.data;
         if (e.data == "ON") {
           document.getElementById("1").checked = true;
@@ -547,7 +556,7 @@
         }
       }, false);
 
-      source.addEventListener('relay2', function (e) {
+      source.addEventListener("2", function (e) {
         document.getElementById("relay2").innerHTML = e.data;
         if (e.data == "ON") {
           document.getElementById("2").checked = true;
@@ -557,7 +566,7 @@
         }
       }, false);
 
-      source.addEventListener('relay3', function (e) {
+      source.addEventListener("3", function (e) {
         document.getElementById("relay3").innerHTML = e.data;
         if (e.data == "ON") {
           document.getElementById("3").checked = true;
@@ -567,7 +576,7 @@
         }
       }, false);
 
-      source.addEventListener('relay4', function (e) {
+      source.addEventListener("4", function (e) {
         document.getElementById("relay4").innerHTML = e.data;
         if (e.data == "ON") {
           document.getElementById("4").checked = true;
@@ -579,7 +588,7 @@
 
       /* ------------------------------------------------------------------- */
 
-      source.addEventListener('timer', function (e) {
+      source.addEventListener('t', function (e) {
         if (e.data[0] == "t") {
           document.getElementById(e.data).checked = false; // Turn-off Timer
         }
@@ -588,7 +597,7 @@
         }
       }, false);
 
-      source.addEventListener('calendar', function (e) {
+      source.addEventListener('c', function (e) {
         if (e.data[0] == "c") {
           document.getElementById(e.data).checked = false; // Turn-off Calendar
         }
@@ -596,7 +605,7 @@
           document.getElementById("c" + e.data).checked = true; // Turn-on Calendar
         }
       }, false);
-    }
+    };
 
     /* --------------------------------------------------------------------- */
     /*                           INTERFACE EFFECTS                           */
@@ -614,7 +623,7 @@
         //
         content.style.maxHeight = null;
       } else {
-        coll[0].style.backgroundColor = "#00ABB3"; // Display "Special" color for easy viewing
+        coll[0].style.backgroundColor = "#757090"; // Display "Special" color for easy viewing
         //
         var height = 0;
         for (var i = 1; i < coll.length; i++) {
@@ -651,26 +660,32 @@
     /*                                 TIMER                                 */
     /* --------------------------------------------------------------------- */
 
-    /* Send the info Timer (HTTP GET) to ESP */
+    /**
+     * Send the info Timer (HTTP GET) to ESP
+     * 
+     * Ex:
+     * "/ton?n=1&h=23&m=59&s=59&t=0"  → On Timer1 (Trig Relay 1 ON at 23:59:59)
+     * "/tof?n=1"                     → Off Timer1
+     */
     function toggleTimer(element, device) {
       var xhr = new XMLHttpRequest();
       if (element.checked) {
-        var h = document.getElementById("h" + device).value;
-        var m = document.getElementById("m" + device).value;
-        var s = document.getElementById("s" + device).value;
+        var h = document.getElementById("th" + device).value;
+        var m = document.getElementById("tm" + device).value;
+        var s = document.getElementById("ts" + device).value;
         //
         var trig = "";
-        if (document.getElementById("on" + device).checked) {
-          trig = document.getElementById("on" + device).value;
+        if (document.getElementById("tOn" + device).checked) {
+          trig = document.getElementById("tOn" + device).value;
         }
         else {
-          trig = document.getElementById("off" + device).value;
+          trig = document.getElementById("tOff" + device).value;
         }
         //
-        xhr.open("GET", "/timerON?device=" + device + "&h=" + h + "&m=" + m + "&s=" + s + "&trig=" + trig, true);
+        xhr.open("GET", "/ton?n=" + device + "&h=" + h + "&m=" + m + "&s=" + s + "&t=" + trig, true);
       }
       else {
-        xhr.open("GET", "/timerOFF?device=" + device, true);
+        xhr.open("GET", "/tof?n=" + device, true);
       }
       xhr.send();
     };
@@ -679,19 +694,27 @@
     /*                                CALENDAR                               */
     /* --------------------------------------------------------------------- */
 
-    /* Send the info Calendar (HTTP GET) to ESP */
+    /**
+     * Send the info Calendar (HTTP GET) to ESP
+     * 
+     * Ex:
+     * "/con?n=1&nH=13&nM=13&fH=7&fM=7" → On Calendar 1
+     *                                  | Trig Relay 1 ON at 13:13 PM
+     *                                  | Trig Relay 1 OFF at 07:07 AM
+     * "/cof?n=1"                       → Off Calendar 1
+     */
     function toggleCalendar(element, device) {
       var xhr = new XMLHttpRequest();
       if (element.checked) {
-        var onH = document.getElementById("calOn" + device).value.slice(0, 2);
-        var onM = document.getElementById("calOn" + device).value.slice(3, 5);
-        var offH = document.getElementById("calOff" + device).value.slice(0, 2);
-        var offM = document.getElementById("calOff" + device).value.slice(3, 5);
+        var onH = document.getElementById("cOn" + device).value.slice(0, 2);
+        var onM = document.getElementById("cOn" + device).value.slice(3, 5);
+        var offH = document.getElementById("cOff" + device).value.slice(0, 2);
+        var offM = document.getElementById("cOff" + device).value.slice(3, 5);
         //
-        xhr.open("GET", "/calendarON?device=" + device + "&onH=" + onH + "&onM=" + onM + "&offH=" + offH + "&offM=" + offM, true);
+        xhr.open("GET", "/con?n=" + device + "&nH=" + onH + "&nM=" + onM + "&fH=" + offH + "&fM=" + offM, true);
       }
       else {
-        xhr.open("GET", "/calendarOFF?device=" + device, true);
+        xhr.open("GET", "/cof?n=" + device, true);
       }
       xhr.send();
     };
